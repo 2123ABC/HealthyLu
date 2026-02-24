@@ -82,3 +82,19 @@ app/src/main/java/ccb/crayalsokakamiee/healthylu/
 ## 许可证
 
 MIT License
+
+##以下内容是手打的
+
+这个软件的初衷只是图一乐，但是感觉确实挺有用的然后就做出来了233
+目前支持检测的应用不是很多只有6个：
+```
+"com.xjs.ehviewer",      // EHViewer
+"com.perol.pixez", //PixEz
+"com.JMComic3.app", //JMComic
+"com.picacomic.fregata", //哔咔
+"sg.jxrgq.wbbzrf", //91
+"jp.pxv.android" //Pixiv
+```
+哪天心血来潮了可能会添加更多软件的支持吧...
+关于里面的牢骚话请不要发出来求求了Bro还是想读书的不想发个牢骚连书都没得读了
+有空的话可以关注以下我的B站账号谢谢谢谢
