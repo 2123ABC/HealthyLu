@@ -15,6 +15,7 @@ import android.widget.AdapterView
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -31,6 +32,7 @@ class SettingsFragment : Fragment() {
     private lateinit var cbBootStartup: CheckBox
     private lateinit var cbBackgroundService: CheckBox
     private lateinit var cbAppReminder: CheckBox
+    private lateinit var tvVersion: TextView
     private lateinit var waterRecordManager: WaterRecordManager
 
     private var isSpinnerInitialized = false
@@ -57,6 +59,15 @@ class SettingsFragment : Fragment() {
         cbBootStartup = view.findViewById(R.id.cbBootStartup)
         cbBackgroundService = view.findViewById(R.id.cbBackgroundService)
         cbAppReminder = view.findViewById(R.id.cbAppReminder)
+        tvVersion = view.findViewById(R.id.tvVersion)
+        
+        // 设置版本号
+        try {
+            val versionName = requireContext().packageManager.getPackageInfo(requireContext().packageName, 0).versionName
+            tvVersion.text = "版本 $versionName"
+        } catch (e: Exception) {
+            tvVersion.text = "版本 未知"
+        }
 
         btnClearData.setOnClickListener {
             showClearDataDialog()
@@ -391,9 +402,16 @@ class SettingsFragment : Fragment() {
         )
         val randomStatement = randomStatements[kotlin.random.Random.nextInt(randomStatements.size)]
         
+        // 获取版本号
+        val versionName = try {
+            requireContext().packageManager.getPackageInfo(requireContext().packageName, 0).versionName
+        } catch (e: Exception) {
+            "未知"
+        }
+        
         AlertDialog.Builder(requireContext())
             .setTitle("关于作者")
-            .setMessage("作者：HengryCray(Also Kakamiee and MekoNacho)。\n\n这个软件终归是作用有限的，它能做到的只有监督你自律，而不是控制你自律\n\n$randomStatement")
+            .setMessage("版本：$versionName\n\n作者：HengryCray(Also Kakamiee and MekoNacho)。\n\n这个软件终归是作用有限的，它能做到的只有监督你自律，而不是控制你自律\n\n$randomStatement")
             .setPositiveButton("去我的B站主页看看？顺便点个关注吧") { _, _ ->
                 // 点击确定后跳转到 rickroll 网页
                 val rickrollUrl = "https://space.bilibili.com/474494752"
