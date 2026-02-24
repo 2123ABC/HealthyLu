@@ -1,0 +1,51 @@
+[2026-03-02 10:29:48.143] [I] [CrashHandler] CrashHandler initialized
+[2026-03-02 10:29:48.147] [I] [HealthyLuApplication] Application created successfully
+[2026-03-02 10:29:48.514] [E] [CRASH] Uncaught exception in thread: main
+java.lang.RuntimeException: Unable to instantiate receiver androidx.startup.BootReceiver: java.lang.ClassNotFoundException: Didn't find class "androidx.startup.BootReceiver" on path: DexPathList[[zip file "/data/app/~~ncjpPOB-Gu7Anz7DtbSKGA==/ccb.crayalsokakamiee.healthylu-ikVT8Vvp3Ce0GE07vFmupg==/base.apk"],nativeLibraryDirectories=[/data/app/~~ncjpPOB-Gu7Anz7DtbSKGA==/ccb.crayalsokakamiee.healthylu-ikVT8Vvp3Ce0GE07vFmupg==/lib/arm64, /data/app/~~ncjpPOB-Gu7Anz7DtbSKGA==/ccb.crayalsokakamiee.healthylu-ikVT8Vvp3Ce0GE07vFmupg==/base.apk!/lib/arm64-v8a, /system/lib64, /system_ext/lib64]]
+	at android.app.ActivityThread.handleReceiver(ActivityThread.java:5092)
+	at android.app.ActivityThread.-$$Nest$mhandleReceiver(Unknown Source:0)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2666)
+	at android.os.Handler.dispatchMessage(Handler.java:107)
+	at android.os.Looper.loopOnce(Looper.java:282)
+	at android.os.Looper.loop(Looper.java:387)
+	at android.app.ActivityThread.main(ActivityThread.java:9500)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:600)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1005)
+Caused by: java.lang.ClassNotFoundException: Didn't find class "androidx.startup.BootReceiver" on path: DexPathList[[zip file "/data/app/~~ncjpPOB-Gu7Anz7DtbSKGA==/ccb.crayalsokakamiee.healthylu-ikVT8Vvp3Ce0GE07vFmupg==/base.apk"],nativeLibraryDirectories=[/data/app/~~ncjpPOB-Gu7Anz7DtbSKGA==/ccb.crayalsokakamiee.healthylu-ikVT8Vvp3Ce0GE07vFmupg==/lib/arm64, /data/app/~~ncjpPOB-Gu7Anz7DtbSKGA==/ccb.crayalsokakamiee.healthylu-ikVT8Vvp3Ce0GE07vFmupg==/base.apk!/lib/arm64-v8a, /system/lib64, /system_ext/lib64]]
+	at dalvik.system.BaseDexClassLoader.findClass(BaseDexClassLoader.java:259)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:637)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:573)
+	at android.app.AppComponentFactory.instantiateReceiver(AppComponentFactory.java:110)
+	at androidx.core.app.CoreComponentFactory.instantiateReceiver(CoreComponentFactory.java:59)
+	at android.app.ActivityThread.handleReceiver(ActivityThread.java:5085)
+	... 9 more
+
+[2026-03-02 10:29:48.540] [E] [CRASH] Application crashed!
+java.lang.RuntimeException: Unable to instantiate receiver androidx.startup.BootReceiver: java.lang.ClassNotFoundException: Didn't find class "androidx.startup.BootReceiver" on path: DexPathList[[zip file "/data/app/~~ncjpPOB-Gu7Anz7DtbSKGA==/ccb.crayalsokakamiee.healthylu-ikVT8Vvp3Ce0GE07vFmupg==/base.apk"],nativeLibraryDirectories=[/data/app/~~ncjpPOB-Gu7Anz7DtbSKGA==/ccb.crayalsokakamiee.healthylu-ikVT8Vvp3Ce0GE07vFmupg==/lib/arm64, /data/app/~~ncjpPOB-Gu7Anz7DtbSKGA==/ccb.crayalsokakamiee.healthylu-ikVT8Vvp3Ce0GE07vFmupg==/base.apk!/lib/arm64-v8a, /system/lib64, /system_ext/lib64]]
+	at android.app.ActivityThread.handleReceiver(ActivityThread.java:5092)
+	at android.app.ActivityThread.-$$Nest$mhandleReceiver(Unknown Source:0)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2666)
+	at android.os.Handler.dispatchMessage(Handler.java:107)
+	at android.os.Looper.loopOnce(Looper.java:282)
+	at android.os.Looper.loop(Looper.java:387)
+	at android.app.ActivityThread.main(ActivityThread.java:9500)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:600)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1005)
+Caused by: java.lang.ClassNotFoundException: Didn't find class "androidx.startup.BootReceiver" on path: DexPathList[[zip file "/data/app/~~ncjpPOB-Gu7Anz7DtbSKGA==/ccb.crayalsokakamiee.healthylu-ikVT8Vvp3Ce0GE07vFmupg==/base.apk"],nativeLibraryDirectories=[/data/app/~~ncjpPOB-Gu7Anz7DtbSKGA==/ccb.crayalsokakamiee.healthylu-ikVT8Vvp3Ce0GE07vFmupg==/lib/arm64, /data/app/~~ncjpPOB-Gu7Anz7DtbSKGA==/ccb.crayalsokakamiee.healthylu-ikVT8Vvp3Ce0GE07vFmupg==/base.apk!/lib/arm64-v8a, /system/lib64, /system_ext/lib64]]
+	at dalvik.system.BaseDexClassLoader.findClass(BaseDexClassLoader.java:259)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:637)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:573)
+	at android.app.AppComponentFactory.instantiateReceiver(AppComponentFactory.java:110)
+	at androidx.core.app.CoreComponentFactory.instantiateReceiver(CoreComponentFactory.java:59)
+	at android.app.ActivityThread.handleReceiver(ActivityThread.java:5085)
+	... 9 more
+
+[2026-03-02 10:29:48.543] [E] [CRASH] Device Info: 
+Device Info:
+Manufacturer: OPPO
+Model: PHW110
+OS Version: 15
+SDK Version: 35
+App Version: 1.0 (1)

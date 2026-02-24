@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_checkin"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="打卡" />
+    <item
+        android:id="@+id/navigation_total"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:title="总量" />
+    <item
+        android:id="@+id/navigation_settings"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="设置和关于" />
+</menu>
