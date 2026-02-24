@@ -393,7 +393,7 @@ class SettingsFragment : Fragment() {
         
         AlertDialog.Builder(requireContext())
             .setTitle("关于作者")
-            .setMessage("作者：HengryCray(Also Kakamiee and MekoNacho)。\n\n\n\n这个软件终归是作用有限的，它能做到的只有监督你自律，而不是控制你自律$randomStatement")
+            .setMessage("作者：HengryCray(Also Kakamiee and MekoNacho)。\n\n这个软件终归是作用有限的，它能做到的只有监督你自律，而不是控制你自律\n\n$randomStatement")
             .setPositiveButton("去我的B站主页看看？顺便点个关注吧") { _, _ ->
                 // 点击确定后跳转到 rickroll 网页
                 val rickrollUrl = "https://space.bilibili.com/474494752"
