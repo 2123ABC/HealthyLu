@@ -186,6 +186,16 @@
                 android:backgroundTint="@color/button_orange"
                 android:layout_marginTop="16dp" />
 
+            <Button
+                android:id="@+id/btnGithub"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="GitHub 项目地址"
+                android:textSize="18sp"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/button_teal"
+                android:layout_marginTop="16dp" />
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

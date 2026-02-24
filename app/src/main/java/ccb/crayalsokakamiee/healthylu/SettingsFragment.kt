@@ -27,6 +27,7 @@ class SettingsFragment : Fragment() {
     private lateinit var spinnerThemeMode: Spinner
     private lateinit var btnCheckPermissions: Button
     private lateinit var btnAuthor: Button
+    private lateinit var btnGithub: Button
     private lateinit var cbBootStartup: CheckBox
     private lateinit var cbBackgroundService: CheckBox
     private lateinit var cbAppReminder: CheckBox
@@ -51,6 +52,7 @@ class SettingsFragment : Fragment() {
         btnClearLogs = view.findViewById(R.id.btnClearLogs)
         btnCheckPermissions = view.findViewById(R.id.btnCheckPermissions)
         btnAuthor = view.findViewById(R.id.btnAuthor)
+        btnGithub = view.findViewById(R.id.btnGithub)
         spinnerThemeMode = view.findViewById(R.id.spinnerThemeMode)
         cbBootStartup = view.findViewById(R.id.cbBootStartup)
         cbBackgroundService = view.findViewById(R.id.cbBackgroundService)
@@ -70,6 +72,10 @@ class SettingsFragment : Fragment() {
 
         btnAuthor.setOnClickListener {
             showAuthorInfo()
+        }
+        
+        btnGithub.setOnClickListener {
+            openGithubRepo()
         }
         
         // 设置功能开关
@@ -396,6 +402,12 @@ class SettingsFragment : Fragment() {
             }
             .setNegativeButton("算了算了白嫖软件挺好的", null)
             .show()
+    }
+
+    private fun openGithubRepo() {
+        val githubUrl = "https://github.com/2123ABC/HealthyLu"
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(githubUrl))
+        startActivity(intent)
     }
 
     /**
