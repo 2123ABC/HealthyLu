@@ -22,12 +22,6 @@
 - **数据安全** - 使用 EncryptedSharedPreferences 加密存储敏感数据
 - **日志记录** - 完整的应用日志，支持查看和清除
 
-## 技术栈
-
-- **语言**: Kotlin
-- **最低SDK**: Android 8.0 (API 26)
-- **目标SDK**: Android 15 (API 36)
-
 ### 主要依赖
 - AndroidX Core KTX
 - AndroidX Lifecycle (ViewModel, LiveData)
@@ -84,7 +78,7 @@ app/src/main/java/ccb/crayalsokakamiee/healthylu/
 
 - B站主页: [@474494752](https://space.bilibili.com/474494752)
 
-此README由GLM4.7生成
+此README由GLM5生成
 
 ## 许可证
 
