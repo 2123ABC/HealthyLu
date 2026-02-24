@@ -29,7 +29,7 @@ class WaterRecordManager(context: Context) {
             )
         } catch (e: Exception) {
             // 如果加密失败，回退到普通SharedPreferences
-            android.util.Log.e("WaterRecordManager", "Error creating encrypted preferences, using fallback: ${e.message}", e)
+            android.util.Log.e("WaterRecordManager", "负责加密的杨强校长说不行，理由是: ${e.message}", e)
             context.getSharedPreferences("water_records", Context.MODE_PRIVATE)
         }
     }

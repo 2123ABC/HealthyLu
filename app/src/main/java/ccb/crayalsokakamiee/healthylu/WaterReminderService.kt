@@ -110,6 +110,18 @@ class WaterReminderService : Service() {
         android.util.Log.d("WaterReminderService", "Service onCreate called")
         createNotificationChannel()
         createReadingReminderChannel()
+        
+        // 启动定时提醒
+        schedulePeriodicReminder()
+    }
+    
+    private fun schedulePeriodicReminder() {
+        val waterRecordManager = WaterRecordManager(this)
+        // 如果本周打卡次数小于2，启动定时提醒
+        if (waterRecordManager.getWeekCount() < 2) {
+            WaterReminderReceiver.scheduleHourlyReminder(this)
+            android.util.Log.d("WaterReminderService", "Periodic reminder scheduled")
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -278,7 +290,7 @@ class WaterReminderService : Service() {
                     }
                 }
             } catch (e: Exception) {
-                android.util.Log.e("WaterReminderService", "Error checking foreground app: ${e.message}", e)
+                android.util.Log.e("WaterReminderService", "查找前台应用的严望说不行，理由是: ${e.message}", e)
             }
         }
     }

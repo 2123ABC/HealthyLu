@@ -4,4 +4,21 @@
     <style name="Theme.HealthyLu" parent="QMUI.Compat.NoActionBar">
         <item name="android:forceDarkAllowed">true</item>
     </style>
+
+    <!-- 自定义Dialog样式：缩放 + 淡入淡出动画 -->
+    <style name="ScaleFadeDialog" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="android:windowAnimationStyle">@style/ScaleFadeAnimation</item>
+    </style>
+
+    <!-- 深色模式Dialog样式 -->
+    <style name="ScaleFadeDialog.Dark" parent="Theme.MaterialComponents.Dialog.Alert">
+        <item name="android:windowAnimationStyle">@style/ScaleFadeAnimation</item>
+    </style>
+
+    <!-- Dialog动画样式 -->
+    <style name="ScaleFadeAnimation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
+        <item name="android:windowExitAnimation">@anim/dialog_exit</item>
+    </style>
+
 </resources>

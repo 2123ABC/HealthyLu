@@ -2,14 +2,6 @@ package ccb.crayalsokakamiee.healthylu
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.Shader
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -20,23 +12,14 @@ import android.os.Process
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import android.view.ViewGroup
-import android.widget.FrameLayout
-import androidx.constraintlayout.widget.ConstraintLayout
-import java.io.InputStream
-import java.util.Calendar
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var fragmentContainer: FrameLayout
+    private lateinit var viewPager: ViewPager2
     private lateinit var bottomNavigation: BottomNavigationView
-    private lateinit var backgroundManager: BackgroundManager
-    private lateinit var mainLayout: ConstraintLayout
-    
-    // 使用懒加载创建Fragment，避免重复创建
-    private val checkInFragment by lazy { CheckInFragment() }
-    private val totalFragment by lazy { TotalFragment() }
-    private val settingsFragment by lazy { SettingsFragment() }
 
     // 使用Handler管理延迟任务，避免Activity销毁后回调导致的崩溃
     private val handler = Handler(Looper.getMainLooper())
@@ -55,17 +38,37 @@ class MainActivity : AppCompatActivity() {
             super.onCreate(savedInstanceState)
             setContentView(R.layout.activity_main)
 
-            fragmentContainer = findViewById(R.id.fragmentContainer)
+            viewPager = findViewById(R.id.viewPager)
             bottomNavigation = findViewById(R.id.bottomNavigation)
-            mainLayout = findViewById(R.id.mainLayout)
-            backgroundManager = BackgroundManager(this)
-
-            // 应用背景设置
-            try {
-                applyBackgroundByArea()
-            } catch (e: Exception) {
-                android.util.Log.e("MainActivity", "Error applying background: ${e.message}", e)
-            }
+            
+            // 设置ViewPager2适配器
+            viewPager.adapter = ViewPagerAdapter(this)
+            
+            // 预加载相邻页面
+            viewPager.offscreenPageLimit = 1
+            
+            // 禁用RecyclerView的ItemAnimator，避免干扰PageTransformer
+            (viewPager.getChildAt(0) as? androidx.recyclerview.widget.RecyclerView)?.itemAnimator = null
+            
+            // 设置淡入淡出页面切换动画
+            viewPager.setPageTransformer(FadePageTransformer())
+            
+            // ViewPager2页面切换监听，同步底部导航栏
+            viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    bottomNavigation.selectedItemId = when (position) {
+                        0 -> R.id.navigation_checkin
+                        1 -> R.id.navigation_total
+                        2 -> R.id.navigation_settings
+                        else -> R.id.navigation_checkin
+                    }
+                }
+                
+                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                    // 确保滚动时PageTransformer被正确触发
+                    // 这个回调在首次切换时会确保动画生效
+                }
+            })
             
             // 延迟启动后台保活服务，避免启动时崩溃
             val startServiceRunnable = object : Runnable {
@@ -82,224 +85,55 @@ class MainActivity : AppCompatActivity() {
             if (!hasUsageStats || !hasNotificationPermission) {
                 checkAllPermissions()
             }
-            
-            // 延迟启动每周提醒，避免启动时崩溃
-            val scheduleReminderRunnable = object : Runnable {
-                override fun run() {
-                    activityRef.get()?.scheduleMorningReminder()
-                }
-            }
-            pendingRunnables.add(scheduleReminderRunnable)
-            handler.postDelayed(scheduleReminderRunnable, 1500)
 
+            // 底部导航栏点击监听，同步ViewPager2
             bottomNavigation.setOnItemSelectedListener { item ->
-                try {
-                    when (item.itemId) {
-                        R.id.navigation_checkin -> {
-                            replaceFragment(checkInFragment)
-                            true
-                        }
-                        R.id.navigation_total -> {
-                            replaceFragment(totalFragment)
-                            true
-                        }
-                        R.id.navigation_settings -> {
-                            replaceFragment(settingsFragment)
-                            true
-                        }
-                        else -> false
-                    }
-                } catch (e: Exception) {
-                    android.util.Log.e("MainActivity", "Error handling navigation: ${e.message}", e)
-                    false
+                val position = when (item.itemId) {
+                    R.id.navigation_checkin -> 0
+                    R.id.navigation_total -> 1
+                    R.id.navigation_settings -> 2
+                    else -> 0
                 }
-            }
-
-            // 默认显示打卡页面
-            if (savedInstanceState == null) {
-                try {
-                    replaceFragment(checkInFragment)
-                } catch (e: Exception) {
-                    android.util.Log.e("MainActivity", "Error setting default fragment: ${e.message}", e)
-                }
+                viewPager.setCurrentItem(position, true)
+                true
             }
         } catch (e: Exception) {
-            android.util.Log.e("MainActivity", "Error in onCreate: ${e.message}", e)
+            android.util.Log.e("MainActivity", "onCreate里的陈争风说启动有问题，理由是: ${e.message}", e)
             // 尝试设置基本UI以避免白屏
             try {
                 setContentView(R.layout.activity_main)
             } catch (ex: Exception) {
-                android.util.Log.e("MainActivity", "Critical error setting content view: ${ex.message}", ex)
+                android.util.Log.e("MainActivity", "设置content view的潘相舜让程序的错误代码滚出来了: ${ex.message}", ex)
             }
         }
     }
     
-    fun applyBackgroundByArea() {
-        try {
-            val tilingArea = backgroundManager.getTilingArea()
-            val hasBackgroundImage = backgroundManager.getBackgroundImageUri() != null
-            
-            when (tilingArea) {
-                "fullscreen" -> {
-                    // 全屏背景
-                    applyBackgroundToView(mainLayout)
-                    fragmentContainer.background = null
-                }
-                "content", "above_nav" -> {
-                    // 内容区域背景
-                    if (!hasBackgroundImage) {
-                        // 只有在没有背景图片时才设置默认背景色
-                        try {
-                            mainLayout.setBackgroundColor(Color.parseColor("#f0f0f0"))
-                        } catch (e: Exception) {
-                            android.util.Log.e("MainActivity", "Error setting main layout background: ${e.message}", e)
-                        }
-                    } else {
-                        // 有背景图片时清除背景色
-                        mainLayout.background = null
-                    }
-                    applyBackgroundToView(fragmentContainer)
-                }
-                else -> {
-                    applyBackgroundToView(mainLayout)
-                    fragmentContainer.background = null
-                }
+    // ViewPager2适配器
+    private class ViewPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
+        override fun getItemCount(): Int = 3
+        override fun createFragment(position: Int): Fragment {
+            return when (position) {
+                0 -> CheckInFragment()
+                1 -> TotalFragment()
+                else -> SettingsFragment()
             }
-        } catch (e: Exception) {
-            android.util.Log.e("MainActivity", "Error applying background by area: ${e.message}", e)
-            // 出错时设置默认背景
-            try {
-                mainLayout.setBackgroundColor(Color.parseColor("#f0f0f0"))
-                fragmentContainer.background = null
-            } catch (ex: Exception) {
-                android.util.Log.e("MainActivity", "Error setting default background: ${ex.message}", ex)
-            }
-        }
-    }
-    
-    private fun applyBackgroundToView(view: android.view.View) {
-        val imageUriString = backgroundManager.getBackgroundImageUri()
-        
-        android.util.Log.d("MainActivity", "applyBackgroundToView - imageUriString: $imageUriString")
-        android.util.Log.d("MainActivity", "applyBackgroundToView - view.width: ${view.width}, view.height: ${view.height}")
-        
-        if (imageUriString != null && imageUriString.isNotEmpty()) {
-            try {
-                val imageUri = Uri.parse(imageUriString)
-                android.util.Log.d("MainActivity", "applyBackgroundToView - imageUri: $imageUri")
-                
-                // 使用优化的Bitmap加载方法
-                val bitmap = decodeSampledBitmapFromUri(imageUri, view.width, view.height)
-                
-                android.util.Log.d("MainActivity", "applyBackgroundToView - bitmap: $bitmap")
-                
-                if (bitmap != null) {
-                    val bitmapDrawable = createBitmapDrawableByMode(bitmap)
-                    val combinedDrawable = applyOverlayToBackground(bitmapDrawable)
-                    view.background = combinedDrawable
-                    android.util.Log.d("MainActivity", "applyBackgroundToView - background set successfully")
-                    return
-                }
-            } catch (e: Exception) {
-                android.util.Log.e("MainActivity", "Error loading background image: ${e.message}", e)
-                try {
-                    view.setBackgroundColor(Color.parseColor("#f0f0f0"))
-                } catch (ex: Exception) {
-                    android.util.Log.e("MainActivity", "Error setting default background: ${ex.message}", ex)
-                }
-                return
-            }
-        }
-        
-        // 如果没有图片或加载失败，使用默认背景
-        android.util.Log.d("MainActivity", "applyBackgroundToView - no image, using default background")
-        try {
-            view.setBackgroundColor(Color.parseColor("#f0f0f0"))
-        } catch (e: Exception) {
-            android.util.Log.e("MainActivity", "Error setting default background: ${e.message}", e)
-        }
-    }
-    
-    /**
-     * 优化的Bitmap加载方法，使用采样压缩和RGB_565配置降低内存占用
-     */
-    private fun decodeSampledBitmapFromUri(uri: Uri, reqWidth: Int, reqHeight: Int): Bitmap? {
-        return contentResolver.openInputStream(uri)?.use { inputStream ->
-            val options = android.graphics.BitmapFactory.Options().apply {
-                inJustDecodeBounds = true
-            }
-            android.graphics.BitmapFactory.decodeStream(inputStream, null, options)
-            
-            // 如果view尺寸为0，使用屏幕尺寸
-            val displayMetrics = resources.displayMetrics
-            val actualReqWidth = if (reqWidth > 0) reqWidth else displayMetrics.widthPixels
-            val actualReqHeight = if (reqHeight > 0) reqHeight else displayMetrics.heightPixels
-            
-            options.inSampleSize = calculateInSampleSize(options, actualReqWidth, actualReqHeight)
-            options.inJustDecodeBounds = false
-            options.inPreferredConfig = android.graphics.Bitmap.Config.RGB_565  // 降低内存占用
-            
-            contentResolver.openInputStream(uri)?.use { decodedStream ->
-                android.graphics.BitmapFactory.decodeStream(decodedStream, null, options)
-            }
-        }
-    }
-    
-    /**
-     * 计算合适的采样率
-     */
-    private fun calculateInSampleSize(
-        options: android.graphics.BitmapFactory.Options,
-        reqWidth: Int,
-        reqHeight: Int
-    ): Int {
-        val (height, width) = options.outHeight to options.outWidth
-        var inSampleSize = 1
-        
-        if (height > reqHeight || width > reqWidth) {
-            val halfHeight = height / 2
-            val halfWidth = width / 2
-            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
-                inSampleSize *= 2
-            }
-        }
-        return inSampleSize
-    }
-    
-    private fun createBitmapDrawableByMode(bitmap: Bitmap): BitmapDrawable {
-        // 始终使用拉伸模式
-        return BitmapDrawable(resources, bitmap)
-    }
-    
-    private fun applyOverlayToBackground(backgroundDrawable: BitmapDrawable): Drawable {
-        val overlayColor = backgroundManager.getOverlayColor()
-        
-        android.util.Log.d("MainActivity", "applyOverlayToBackground - color: $overlayColor, alpha: ${Color.alpha(overlayColor)}")
-        
-        return if (overlayColor != -1) {
-            // 直接使用颜色的 alpha 值，不再使用单独的 overlay_opacity
-            val overlayDrawable = ColorDrawable(overlayColor)
-            TintedBitmapDrawable(backgroundDrawable, overlayDrawable)
-        } else {
-            android.util.Log.d("MainActivity", "No overlay color, returning background only")
-            backgroundDrawable
         }
     }
 
     private fun startBackgroundService() {
         try {
-            android.util.Log.d("MainActivity", "Attempting to start background service")
+            android.util.Log.d("MainActivity", "尝试启动后台服务")
             
             val serviceIntent = Intent(this, WaterReminderService::class.java)
             val result = startService(serviceIntent)
-            android.util.Log.d("MainActivity", "Service start result: $result")
+            android.util.Log.d("MainActivity", "服务启动返回结果: $result")
             if (result == null) {
-                android.util.Log.e("MainActivity", "Service start failed - result is null")
+                android.util.Log.e("MainActivity", "服务启动失败，返回了null")
             } else {
-                android.util.Log.d("MainActivity", "Service started successfully")
+                android.util.Log.d("MainActivity", "服务启动成功！")
             }
         } catch (e: Exception) {
-            android.util.Log.e("MainActivity", "Error starting background service: ${e.message}", e)
+            android.util.Log.e("MainActivity", "后台服务启动再起不能: ${e.message}", e)
         }
     }
     
@@ -334,14 +168,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
     
-    private fun checkUsageStatsPermission() {
-        if (!hasUsageStatsPermission()) {
-            // 引导用户去设置中开启权限
-            val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
-            startActivity(intent)
-        }
-    }
-    
     private fun hasUsageStatsPermission(): Boolean {
         val appOps = getSystemService(APP_OPS_SERVICE) as AppOpsManager
         val mode = appOps.checkOpNoThrow(
@@ -361,72 +187,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun scheduleMorningReminder() {
-        try {
-            val calendar = Calendar.getInstance().apply {
-                set(Calendar.HOUR_OF_DAY, 8)
-                set(Calendar.MINUTE, 0)
-                set(Calendar.SECOND, 0)
-                set(Calendar.MILLISECOND, 0)
-                
-                // 设置为每周一
-                set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-                
-                // 如果时间已经过了，设置为下周一
-                if (timeInMillis < System.currentTimeMillis()) {
-                    add(Calendar.WEEK_OF_YEAR, 1)
+    override fun onDestroy() {
+        super.onDestroy()
+
+        // 清理所有Handler回调，避免Activity销毁后回调导致的崩溃
+        pendingRunnables.forEach { handler.removeCallbacks(it) }
+        pendingRunnables.clear()
+        android.util.Log.d("MainActivity", "MainActivity onDestroy - 清除了handler callbacks")
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        // 通过RecyclerView的scrollTo触发PageTransformer初始化
+        viewPager.post {
+            try {
+                val recyclerView = viewPager.getChildAt(0) as? androidx.recyclerview.widget.RecyclerView
+                recyclerView?.let { rv ->
+                    // 保存当前位置
+                    val currentPos = viewPager.currentItem
+                    // 极短暂的滚动来触发变换，然后立即恢复
+                    rv.scrollBy(1, 0)
+                    rv.scrollBy(-1, 0)
                 }
+            } catch (e: Exception) {
+                // 忽略
             }
-            
-            val intent = Intent(this, WaterReminderReceiver::class.java)
-            val pendingIntent = android.app.PendingIntent.getBroadcast(
-                this,
-                0,
-                intent,
-                android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
-            )
-            
-            val alarmManager = getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
-            alarmManager.setRepeating(
-                android.app.AlarmManager.RTC_WAKEUP,
-                calendar.timeInMillis,
-                android.app.AlarmManager.INTERVAL_DAY * 7, // 每周提醒
-                pendingIntent
-            )
-        } catch (e: Exception) {
-            android.util.Log.e("MainActivity", "Error scheduling morning reminder: ${e.message}", e)
         }
     }
-
-    private fun replaceFragment(fragment: Fragment) {
-        // 检查当前显示的Fragment是否与要替换的Fragment相同
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
-        if (currentFragment?.javaClass == fragment.javaClass) {
-            // Fragment已经显示，不需要替换
-            return
-        }
-        
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, fragment)
-            .commit()
-    }
-
-    
-
-        override fun onDestroy() {
-
-            super.onDestroy()
-
-            // 清理所有Handler回调，避免Activity销毁后回调导致的崩溃
-
-            pendingRunnables.forEach { handler.removeCallbacks(it) }
-
-            pendingRunnables.clear()
-
-            android.util.Log.d("MainActivity", "MainActivity onDestroy - cleaned up handler callbacks")
-
-        }
-
-    
-
-    }
+}

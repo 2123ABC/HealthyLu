@@ -12,8 +12,8 @@ android {
         applicationId = "ccb.crayalsokakamiee.healthylu"
         minSdk = 26
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.1"
+        versionCode = 3
+        versionName = "1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -56,6 +56,8 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.8.5")
     // EncryptedSharedPreferences for secure data storage
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
+    // ViewPager2 for swipeable fragments
+    implementation("androidx.viewpager2:viewpager2:1.1.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.junit)

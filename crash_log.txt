@@ -1,11 +1,11 @@
 
 ========================================
-CRASH REPORT - 2026-03-02 10:29:48.516
+CRASH REPORT - 2026-02-24 17:26:18.281
 ========================================
-java.lang.RuntimeException: Unable to instantiate receiver androidx.startup.BootReceiver: java.lang.ClassNotFoundException: Didn't find class "androidx.startup.BootReceiver" on path: DexPathList[[zip file "/data/app/~~ncjpPOB-Gu7Anz7DtbSKGA==/ccb.crayalsokakamiee.healthylu-ikVT8Vvp3Ce0GE07vFmupg==/base.apk"],nativeLibraryDirectories=[/data/app/~~ncjpPOB-Gu7Anz7DtbSKGA==/ccb.crayalsokakamiee.healthylu-ikVT8Vvp3Ce0GE07vFmupg==/lib/arm64, /data/app/~~ncjpPOB-Gu7Anz7DtbSKGA==/ccb.crayalsokakamiee.healthylu-ikVT8Vvp3Ce0GE07vFmupg==/base.apk!/lib/arm64-v8a, /system/lib64, /system_ext/lib64]]
-	at android.app.ActivityThread.handleReceiver(ActivityThread.java:5092)
-	at android.app.ActivityThread.-$$Nest$mhandleReceiver(Unknown Source:0)
-	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2666)
+java.lang.RuntimeException: Unable to create service ccb.crayalsokakamiee.healthylu.WaterReminderService: java.lang.SecurityException: Caller ccb.crayalsokakamiee.healthylu needs to hold android.permission.SCHEDULE_EXACT_ALARM or android.permission.USE_EXACT_ALARM to set exact alarms.
+	at android.app.ActivityThread.handleCreateService(ActivityThread.java:5354)
+	at android.app.ActivityThread.-$$Nest$mhandleCreateService(Unknown Source:0)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2682)
 	at android.os.Handler.dispatchMessage(Handler.java:107)
 	at android.os.Looper.loopOnce(Looper.java:282)
 	at android.os.Looper.loop(Looper.java:387)
@@ -13,14 +13,27 @@ java.lang.RuntimeException: Unable to instantiate receiver androidx.startup.Boot
 	at java.lang.reflect.Method.invoke(Native Method)
 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:600)
 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1005)
-Caused by: java.lang.ClassNotFoundException: Didn't find class "androidx.startup.BootReceiver" on path: DexPathList[[zip file "/data/app/~~ncjpPOB-Gu7Anz7DtbSKGA==/ccb.crayalsokakamiee.healthylu-ikVT8Vvp3Ce0GE07vFmupg==/base.apk"],nativeLibraryDirectories=[/data/app/~~ncjpPOB-Gu7Anz7DtbSKGA==/ccb.crayalsokakamiee.healthylu-ikVT8Vvp3Ce0GE07vFmupg==/lib/arm64, /data/app/~~ncjpPOB-Gu7Anz7DtbSKGA==/ccb.crayalsokakamiee.healthylu-ikVT8Vvp3Ce0GE07vFmupg==/base.apk!/lib/arm64-v8a, /system/lib64, /system_ext/lib64]]
-	at dalvik.system.BaseDexClassLoader.findClass(BaseDexClassLoader.java:259)
-	at java.lang.ClassLoader.loadClass(ClassLoader.java:637)
-	at java.lang.ClassLoader.loadClass(ClassLoader.java:573)
-	at android.app.AppComponentFactory.instantiateReceiver(AppComponentFactory.java:110)
-	at androidx.core.app.CoreComponentFactory.instantiateReceiver(CoreComponentFactory.java:59)
-	at android.app.ActivityThread.handleReceiver(ActivityThread.java:5085)
+Caused by: java.lang.SecurityException: Caller ccb.crayalsokakamiee.healthylu needs to hold android.permission.SCHEDULE_EXACT_ALARM or android.permission.USE_EXACT_ALARM to set exact alarms.
+	at android.os.Parcel.createExceptionOrNull(Parcel.java:3271)
+	at android.os.Parcel.createException(Parcel.java:3255)
+	at android.os.Parcel.readException(Parcel.java:3238)
+	at android.os.Parcel.readException(Parcel.java:3180)
+	at android.app.IAlarmManager$Stub$Proxy.set(IAlarmManager.java:337)
+	at android.app.AlarmManager.setImpl(AlarmManager.java:1097)
+	at android.app.AlarmManager.setImpl(AlarmManager.java:1057)
+	at android.app.AlarmManager.setExactAndAllowWhileIdle(AlarmManager.java:1325)
+	at ccb.crayalsokakamiee.healthylu.WaterReminderReceiver$Companion.scheduleReminder(WaterReminderReceiver.kt:49)
+	at ccb.crayalsokakamiee.healthylu.WaterReminderReceiver$Companion.scheduleHourlyReminder(WaterReminderReceiver.kt:68)
+	at ccb.crayalsokakamiee.healthylu.WaterReminderService.schedulePeriodicReminder(WaterReminderService.kt:122)
+	at ccb.crayalsokakamiee.healthylu.WaterReminderService.onCreate(WaterReminderService.kt:115)
+	at android.app.ActivityThread.handleCreateService(ActivityThread.java:5329)
 	... 9 more
+Caused by: android.os.RemoteException: Remote stack trace:
+	at com.android.server.alarm.AlarmManagerService$4.set(AlarmManagerService.java:3078)
+	at android.app.IAlarmManager$Stub.onTransact(IAlarmManager.java:198)
+	at android.os.Binder.execTransactInternal(Binder.java:1518)
+	at android.os.Binder.execTransact(Binder.java:1457)
+
 
 ========================================
 

@@ -43,30 +43,45 @@ class WaterReminderReceiver : BroadcastReceiver() {
             )
             
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
-            alarmManager.setRepeating(
-                android.app.AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() + intervalMillis,
-                intervalMillis,
-                pendingIntent
-            )
+            val triggerTime = System.currentTimeMillis() + intervalMillis
+            
+            // 检查是否有精确闹钟权限
+            val canScheduleExactAlarms = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                alarmManager.canScheduleExactAlarms()
+            } else {
+                true
+            }
+            
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (canScheduleExactAlarms) {
+                    alarmManager.setExactAndAllowWhileIdle(
+                        android.app.AlarmManager.RTC_WAKEUP,
+                        triggerTime,
+                        pendingIntent
+                    )
+                } else {
+                    // 没有精确闹钟权限，使用不精确的闹钟
+                    alarmManager.setAndAllowWhileIdle(
+                        android.app.AlarmManager.RTC_WAKEUP,
+                        triggerTime,
+                        pendingIntent
+                    )
+                }
+            } else {
+                alarmManager.setExact(
+                    android.app.AlarmManager.RTC_WAKEUP,
+                    triggerTime,
+                    pendingIntent
+                )
+            }
+            
+            android.util.Log.d("WaterReminderReceiver", "Scheduled reminder in ${intervalMillis / 1000} seconds, exactAlarms=$canScheduleExactAlarms")
         }
         
         fun scheduleHourlyReminder(context: Context) {
-            val intent = Intent(context, WaterReminderReceiver::class.java)
-            val pendingIntent = PendingIntent.getBroadcast(
-                context,
-                0,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-            
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
-            alarmManager.setRepeating(
-                android.app.AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() + 60000, // 1分钟后开始
-                android.app.AlarmManager.INTERVAL_HOUR, // 每小时提醒
-                pendingIntent
-            )
+            val intervalMinutes = AppSettingsManager.getReminderIntervalMinutes(context)
+            val intervalMillis = (intervalMinutes * 60 * 1000).toLong()
+            scheduleReminder(context, intervalMillis)
         }
         
         fun cancelReminder(context: Context) {
@@ -84,20 +99,25 @@ class WaterReminderReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        // 检查是否有通知权限
-        if (!hasNotificationPermission(context)) {
-            android.util.Log.d("WaterReminderReceiver", "No notification permission granted, skipping notification")
-            return
-        }
+        android.util.Log.d("WaterReminderReceiver", "onReceive called")
         
         val waterRecordManager = WaterRecordManager(context)
+        val weekCount = waterRecordManager.getWeekCount()
         
-        // 如果这周还没有喝过水，发送通知并安排下一次提醒
-        if (waterRecordManager.getWeekCount() == 0) {
-            showNotification(context)
+        // 如果本周打卡次数小于2，发送通知并调度下一次提醒
+        if (weekCount < 2) {
+            // 检查是否有通知权限
+            if (hasNotificationPermission(context)) {
+                android.util.Log.d("WaterReminderReceiver", "Week count is $weekCount, showing notification")
+                showNotification(context)
+            } else {
+                android.util.Log.d("WaterReminderReceiver", "No notification permission granted, skipping notification")
+            }
             
-            // 安排下一次提醒（1小时后）
+            // 调度下一次提醒
             scheduleHourlyReminder(context)
+        } else {
+            android.util.Log.d("WaterReminderReceiver", "Week count is $weekCount, no more reminders needed")
         }
     }
 
@@ -113,6 +133,7 @@ class WaterReminderReceiver : BroadcastReceiver() {
         }
     }
 
+    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     private fun showNotification(context: Context) {
         createNotificationChannel(context)
         

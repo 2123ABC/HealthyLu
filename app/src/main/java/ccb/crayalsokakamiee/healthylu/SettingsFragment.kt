@@ -32,6 +32,7 @@ class SettingsFragment : Fragment() {
     private lateinit var cbBootStartup: CheckBox
     private lateinit var cbBackgroundService: CheckBox
     private lateinit var cbAppReminder: CheckBox
+    private lateinit var etReminderInterval: android.widget.EditText
     private lateinit var tvVersion: TextView
     private lateinit var waterRecordManager: WaterRecordManager
 
@@ -59,6 +60,7 @@ class SettingsFragment : Fragment() {
         cbBootStartup = view.findViewById(R.id.cbBootStartup)
         cbBackgroundService = view.findViewById(R.id.cbBackgroundService)
         cbAppReminder = view.findViewById(R.id.cbAppReminder)
+        etReminderInterval = view.findViewById(R.id.etReminderInterval)
         tvVersion = view.findViewById(R.id.tvVersion)
         
         // 设置版本号
@@ -183,6 +185,38 @@ class SettingsFragment : Fragment() {
             AppSettingsManager.setAppReminderEnabled(requireContext(), isChecked)
             showToast(if (isChecked) "已开启应用提醒" else "已关闭应用提醒")
         }
+        
+        // 提醒间隔设置
+        val savedInterval = AppSettingsManager.getReminderIntervalMinutes(requireContext())
+        etReminderInterval.setText(savedInterval.toString())
+        
+        etReminderInterval.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                saveReminderInterval()
+            }
+        }
+    }
+    
+    /**
+     * 保存提醒间隔设置
+     */
+    private fun saveReminderInterval() {
+        val text = etReminderInterval.text.toString()
+        val interval = text.toFloatOrNull()
+        
+        if (interval == null || interval <= 0) {
+            showToast("请输入有效的时间间隔")
+            etReminderInterval.setText(AppSettingsManager.getReminderIntervalMinutes(requireContext()).toString())
+            return
+        }
+        
+        AppSettingsManager.setReminderIntervalMinutes(requireContext(), interval)
+        
+        // 重新调度提醒
+        WaterReminderReceiver.cancelReminder(requireContext())
+        WaterReminderReceiver.scheduleHourlyReminder(requireContext())
+        
+        showToast("提醒间隔已设置为 $interval 分钟")
     }
     
     private fun showToast(message: String) {
@@ -194,7 +228,7 @@ class SettingsFragment : Fragment() {
             val intent = Intent(requireContext(), WaterReminderService::class.java)
             requireContext().stopService(intent)
         } catch (e: Exception) {
-            android.util.Log.e("SettingsFragment", "Error stopping service: ${e.message}")
+            android.util.Log.e("SettingsFragment", "负责控制服务的玉伟书记说关闭有问题，理由是: ${e.message}")
         }
     }
     
@@ -207,24 +241,26 @@ class SettingsFragment : Fragment() {
                 requireContext().startService(intent)
             }
         } catch (e: Exception) {
-            android.util.Log.e("SettingsFragment", "Error starting service: ${e.message}")
+            android.util.Log.e("SettingsFragment", "负责控制服务的玉伟书记说启动有问题，理由是: ${e.message}")
         }
     }
     
     private fun checkAllPermissions() {
         val hasUsageStats = hasUsageStatsPermission()
         val hasNotificationPermission = hasNotificationPermission()
-        // 自启动权限无法直接检测，默认提示用户去检查
+        val hasExactAlarmPermission = hasExactAlarmPermission()
         
         val missingPermissions = mutableListOf<String>()
         
         if (!hasNotificationPermission) {
             missingPermissions.add("通知权限 - 用于显示鹿管提醒通知")
         }
+        if (!hasExactAlarmPermission) {
+            missingPermissions.add("闹钟和提醒权限 - 用于设置精确的定时提醒")
+        }
         if (!hasUsageStats) {
             missingPermissions.add("使用情况访问权限 - 用于检测前台应用，在打开H软件时提醒打卡")
         }
-        missingPermissions.add("自启动权限 - 用于开机后自动运行后台服务")
         
         if (missingPermissions.isNotEmpty()) {
             val message = buildString {
@@ -277,7 +313,22 @@ class SettingsFragment : Fragment() {
                 }
             }
             1 -> {
-                // 第二步：使用情况访问权限
+                // 第二步：精确闹钟权限
+                if (!hasExactAlarmPermission()) {
+                    showPermissionGuideDialog(
+                        "闹钟和提醒权限",
+                        "请开启「闹钟和提醒」权限以设置精确的定时提醒。\n\n开启后可以确保定时提醒准时送达。",
+                        "去开启"
+                    ) {
+                        openExactAlarmSettings()
+                    }
+                } else {
+                    currentPermissionStep++
+                    requestNextPermission()
+                }
+            }
+            2 -> {
+                // 第三步：使用情况访问权限
                 if (!hasUsageStatsPermission()) {
                     showPermissionGuideDialog(
                         "使用情况访问权限",
@@ -289,16 +340,6 @@ class SettingsFragment : Fragment() {
                 } else {
                     currentPermissionStep++
                     requestNextPermission()
-                }
-            }
-            2 -> {
-                // 第三步：自启动权限（引导用户去应用详情页）
-                showPermissionGuideDialog(
-                    "自启动权限",
-                    "请在应用设置中开启自启动权限。\n\n不同手机设置方式不同：\n• 小米：应用设置 → 自启动管理\n• 华为：应用启动管理\n• OPPO/VIVO：自启动管理\n\n开启后应用将在开机时自动运行。",
-                    "去设置"
-                ) {
-                    openAppDetailSettings()
                 }
             }
             else -> {
@@ -373,6 +414,34 @@ class SettingsFragment : Fragment() {
             notificationManager.areNotificationsEnabled()
         } else {
             true
+        }
+    }
+    
+    /**
+     * 检查是否有精确闹钟权限
+     */
+    private fun hasExactAlarmPermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
+            alarmManager.canScheduleExactAlarms()
+        } else {
+            true
+        }
+    }
+    
+    /**
+     * 打开精确闹钟设置页面
+     */
+    private fun openExactAlarmSettings() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            try {
+                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                intent.data = Uri.parse("package:" + requireContext().packageName)
+                startActivity(intent)
+            } catch (e: Exception) {
+                // 如果失败，尝试打开应用详情页
+                openAppDetailSettings()
+            }
         }
     }
 

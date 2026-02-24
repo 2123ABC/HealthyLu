@@ -111,9 +111,14 @@ class CheckInFragment : Fragment() {
     }
 
     private fun showWaterBenefitsDialog() {
-        val dialogView = LayoutInflater.from(requireContext()).inflate(android.R.layout.simple_selectable_list_item, null)
+        // 根据深色模式选择主题
+        val themeResId = if (isDarkMode()) {
+            R.style.ScaleFadeDialog_Dark
+        } else {
+            R.style.ScaleFadeDialog
+        }
         
-        AlertDialog.Builder(requireContext())
+        AlertDialog.Builder(requireContext(), themeResId)
             .setTitle("鹿管过多的坏处")
             .setMessage(viewModel.getWaterBenefitsMessage())
             .setPositiveButton("知道了", null)

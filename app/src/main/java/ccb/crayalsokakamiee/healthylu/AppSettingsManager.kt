@@ -14,11 +14,13 @@ object AppSettingsManager {
     private const val KEY_BOOT_STARTUP = "boot_startup_enabled"
     private const val KEY_BACKGROUND_SERVICE = "background_service_enabled"
     private const val KEY_APP_REMINDER = "app_reminder_enabled"
+    private const val KEY_REMINDER_INTERVAL = "reminder_interval_minutes"
     
     // 默认值（全部默认启用）
     private const val DEFAULT_BOOT_STARTUP = true
     private const val DEFAULT_BACKGROUND_SERVICE = true
     private const val DEFAULT_APP_REMINDER = true
+    private const val DEFAULT_REMINDER_INTERVAL = 60.0f // 默认一小时（分钟）
     
     /**
      * 获取 SharedPreferences
@@ -66,5 +68,19 @@ object AppSettingsManager {
      */
     fun setAppReminderEnabled(context: Context, enabled: Boolean) {
         getPrefs(context).edit().putBoolean(KEY_APP_REMINDER, enabled).apply()
+    }
+    
+    /**
+     * 获取定时提醒间隔（分钟）
+     */
+    fun getReminderIntervalMinutes(context: Context): Float {
+        return getPrefs(context).getFloat(KEY_REMINDER_INTERVAL, DEFAULT_REMINDER_INTERVAL)
+    }
+    
+    /**
+     * 设置定时提醒间隔（分钟）
+     */
+    fun setReminderIntervalMinutes(context: Context, intervalMinutes: Float) {
+        getPrefs(context).edit().putFloat(KEY_REMINDER_INTERVAL, intervalMinutes).apply()
     }
 }

@@ -45,7 +45,7 @@ class BootReceiver : BroadcastReceiver() {
                 
                 Log.d(TAG, "Background service started successfully")
             } catch (e: Exception) {
-                Log.e(TAG, "Error starting background service: ${e.message}", e)
+                Log.e(TAG, "启动后台服务失败: ${e.message}", e)
             }
         }
     }
