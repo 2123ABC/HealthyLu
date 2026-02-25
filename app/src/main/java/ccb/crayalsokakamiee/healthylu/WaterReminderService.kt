@@ -266,18 +266,18 @@ class WaterReminderService : Service() {
                         }
                         
                         if (shouldShowReminder) {
-                            // 检查今天是否已经鹿管过
+                            // 检查本周是否已经鹿管过
                             val waterRecordManager = WaterRecordManager(this)
-                            val todayCount = waterRecordManager.getTodayCount()
+                            val weekCount = waterRecordManager.getWeekCount()
                             
                             // 根据鹿管次数显示不同的提醒
-                            if (todayCount == 0) {
-                                // 没鹿管时显示应用提醒
+                            if (weekCount == 0) {
+                                // 本周没鹿管时显示应用提醒
                                 showReadingReminder(foregroundApp)
                                 lastReminderTime = currentTime
                                 lastReminderPackage = foregroundApp
-                            } else if (todayCount > 2) {
-                                // 鹿管超过2次时显示额外提醒
+                            } else if (weekCount > 2) {
+                                // 本周鹿管超过2次时显示额外提醒
                                 showOverLimitReminder()
                                 lastReminderTime = currentTime
                                 lastReminderPackage = foregroundApp
@@ -306,6 +306,18 @@ class WaterReminderService : Service() {
             packageName
         )
         return mode == android.app.AppOpsManager.MODE_ALLOWED
+    }
+    
+    /**
+     * 检查是否有通知权限
+     */
+    private fun hasNotificationPermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.areNotificationsEnabled()
+        } else {
+            true
+        }
     }
     
     private fun updateForegroundNotification() {
@@ -369,8 +381,10 @@ class WaterReminderService : Service() {
             .addAction(android.R.drawable.ic_menu_add, "鹿管次数+1", drinkPendingIntent)
             .build()
         
-        val notificationManager = getSystemService(NotificationManager::class.java)
-        notificationManager.notify(READING_REMINDER_NOTIFICATION_ID, notification)
+        if (hasNotificationPermission()) {
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.notify(READING_REMINDER_NOTIFICATION_ID, notification)
+        }
     }
     
     private fun showOverLimitReminder() {
@@ -404,7 +418,9 @@ class WaterReminderService : Service() {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
         
-        val notificationManager = getSystemService(NotificationManager::class.java)
-        notificationManager.notify(READING_REMINDER_NOTIFICATION_ID, notification)
+        if (hasNotificationPermission()) {
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.notify(READING_REMINDER_NOTIFICATION_ID, notification)
+        }
     }
 }

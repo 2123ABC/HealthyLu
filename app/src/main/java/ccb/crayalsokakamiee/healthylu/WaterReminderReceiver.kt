@@ -104,8 +104,8 @@ class WaterReminderReceiver : BroadcastReceiver() {
         val waterRecordManager = WaterRecordManager(context)
         val weekCount = waterRecordManager.getWeekCount()
         
-        // 如果本周打卡次数小于2，发送通知并调度下一次提醒
-        if (weekCount < 2) {
+        // 如果本周打卡次数小于1，发送通知并调度下一次提醒
+        if (weekCount < 1) {
             // 检查是否有通知权限
             if (hasNotificationPermission(context)) {
                 android.util.Log.d("WaterReminderReceiver", "Week count is $weekCount, showing notification")

@@ -20,14 +20,24 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class MainActivity : AppCompatActivity() {
     private lateinit var viewPager: ViewPager2
     private lateinit var bottomNavigation: BottomNavigationView
+    
+    // 记录期望的页面位置，用于检测并纠正状态恢复导致的错误跳转
+    private var expectedPagePosition = 0
+    // 标记是否正在纠正页面位置
+    private var isCorrectingPosition = false
 
     // 使用Handler管理延迟任务，避免Activity销毁后回调导致的崩溃
     private val handler = Handler(Looper.getMainLooper())
     private val activityRef = java.lang.ref.WeakReference(this)
     private val pendingRunnables = mutableListOf<Runnable>()
+    
+    companion object {
+        private const val PREFS_NAME = "main_activity_state"
+        private const val PREF_KEY_PAGE = "saved_page"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // 在创建Activity之前应用保存的主题（用try-catch包裹防止崩溃）
+        // 在创建Activity之前应用保存的主题
         try {
             ThemeManager.applySavedTheme(this)
         } catch (e: Exception) {
@@ -35,17 +45,38 @@ class MainActivity : AppCompatActivity() {
         }
         
         try {
-            super.onCreate(savedInstanceState)
+            // 传入 null 阻止 Fragment 自动恢复，避免主题切换时页面跳转
+            super.onCreate(null)
             setContentView(R.layout.activity_main)
 
             viewPager = findViewById(R.id.viewPager)
             bottomNavigation = findViewById(R.id.bottomNavigation)
+            
+            // 先读取保存的页面位置
+            val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val savedPage = prefs.getInt(PREF_KEY_PAGE, 0)
+            expectedPagePosition = savedPage
+            
+            // 禁用ViewPager2的自动状态恢复（必须在设置adapter之前）
+            viewPager.isSaveEnabled = false
             
             // 设置ViewPager2适配器
             viewPager.adapter = ViewPagerAdapter(this)
             
             // 预加载相邻页面
             viewPager.offscreenPageLimit = 1
+            
+            // 立即同步底部导航栏（必须在setCurrentItem之前设置，避免回调冲突）
+            val expectedNavId = when (savedPage) {
+                0 -> R.id.navigation_checkin
+                1 -> R.id.navigation_total
+                2 -> R.id.navigation_settings
+                else -> R.id.navigation_checkin
+            }
+            bottomNavigation.selectedItemId = expectedNavId
+            
+            // 恢复页面位置
+            viewPager.setCurrentItem(savedPage, false)
             
             // 禁用RecyclerView的ItemAnimator，避免干扰PageTransformer
             (viewPager.getChildAt(0) as? androidx.recyclerview.widget.RecyclerView)?.itemAnimator = null
@@ -56,17 +87,46 @@ class MainActivity : AppCompatActivity() {
             // ViewPager2页面切换监听，同步底部导航栏
             viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
-                    bottomNavigation.selectedItemId = when (position) {
+                    // 如果正在纠正位置，跳过处理
+                    if (isCorrectingPosition) {
+                        return
+                    }
+                    
+                    // 如果position和期望不一致，说明是状态恢复导致的错误跳转，需要纠正
+                    if (position != expectedPagePosition) {
+                        isCorrectingPosition = true
+                        viewPager.post {
+                            viewPager.setCurrentItem(expectedPagePosition, false)
+                            // 纠正后同步底栏
+                            val correctNavId = when (expectedPagePosition) {
+                                0 -> R.id.navigation_checkin
+                                1 -> R.id.navigation_total
+                                2 -> R.id.navigation_settings
+                                else -> R.id.navigation_checkin
+                            }
+                            bottomNavigation.selectedItemId = correctNavId
+                            // 延迟重置标记，确保纠正完成
+                            viewPager.postDelayed({
+                                isCorrectingPosition = false
+                            }, 100)
+                        }
+                        return
+                    }
+                    
+                    val navId = when (position) {
                         0 -> R.id.navigation_checkin
                         1 -> R.id.navigation_total
                         2 -> R.id.navigation_settings
                         else -> R.id.navigation_checkin
                     }
-                }
-                
-                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                    // 确保滚动时PageTransformer被正确触发
-                    // 这个回调在首次切换时会确保动画生效
+                    bottomNavigation.selectedItemId = navId
+                    // 更新期望位置
+                    expectedPagePosition = position
+                    // 保存当前页面位置
+                    getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                        .edit()
+                        .putInt(PREF_KEY_PAGE, position)
+                        .apply()
                 }
             })
             
@@ -94,16 +154,16 @@ class MainActivity : AppCompatActivity() {
                     R.id.navigation_settings -> 2
                     else -> 0
                 }
+                expectedPagePosition = position
                 viewPager.setCurrentItem(position, true)
                 true
             }
         } catch (e: Exception) {
-            android.util.Log.e("MainActivity", "onCreate里的陈争风说启动有问题，理由是: ${e.message}", e)
-            // 尝试设置基本UI以避免白屏
+            android.util.Log.e("MainActivity", "onCreate error: ${e.message}", e)
             try {
                 setContentView(R.layout.activity_main)
             } catch (ex: Exception) {
-                android.util.Log.e("MainActivity", "设置content view的潘相舜让程序的错误代码滚出来了: ${ex.message}", ex)
+                android.util.Log.e("MainActivity", "setContentView error: ${ex.message}", ex)
             }
         }
     }
@@ -123,17 +183,11 @@ class MainActivity : AppCompatActivity() {
     private fun startBackgroundService() {
         try {
             android.util.Log.d("MainActivity", "尝试启动后台服务")
-            
             val serviceIntent = Intent(this, WaterReminderService::class.java)
             val result = startService(serviceIntent)
             android.util.Log.d("MainActivity", "服务启动返回结果: $result")
-            if (result == null) {
-                android.util.Log.e("MainActivity", "服务启动失败，返回了null")
-            } else {
-                android.util.Log.d("MainActivity", "服务启动成功！")
-            }
         } catch (e: Exception) {
-            android.util.Log.e("MainActivity", "后台服务启动再起不能: ${e.message}", e)
+            android.util.Log.e("MainActivity", "后台服务启动失败: ${e.message}", e)
         }
     }
     
@@ -141,7 +195,6 @@ class MainActivity : AppCompatActivity() {
         val prefs = getSharedPreferences("app_settings", Context.MODE_PRIVATE)
         val hasShownPermissionDialog = prefs.getBoolean("has_shown_permission_dialog", false)
         
-        // 如果已经显示过权限提示，就不再重复显示
         if (hasShownPermissionDialog) {
             return
         }
@@ -150,20 +203,14 @@ class MainActivity : AppCompatActivity() {
         val hasNotificationPermission = hasNotificationPermission()
         
         if (!hasUsageStats || !hasNotificationPermission) {
-            val message = buildString {
-                    append("第一次安装应用请去设置里检查权限以获得最佳体验awa")
-            }
-            
             AlertDialog.Builder(this)
                 .setTitle("需要权限")
-                .setMessage(message)
+                .setMessage("第一次安装应用请去设置里检查权限以获得最佳体验awa")
                 .setPositiveButton("我知道了") { _, _ ->
-                    // 记录已经显示过权限提示
                     prefs.edit().putBoolean("has_shown_permission_dialog", true).apply()
                 }
                 .show()
         } else {
-            // 如果权限都已开启，也记录一下，避免不必要的检查
             prefs.edit().putBoolean("has_shown_permission_dialog", true).apply()
         }
     }
@@ -189,28 +236,39 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-
-        // 清理所有Handler回调，避免Activity销毁后回调导致的崩溃
         pendingRunnables.forEach { handler.removeCallbacks(it) }
         pendingRunnables.clear()
-        android.util.Log.d("MainActivity", "MainActivity onDestroy - 清除了handler callbacks")
     }
     
     override fun onResume() {
         super.onResume()
-        // 通过RecyclerView的scrollTo触发PageTransformer初始化
+        syncBottomNavigationState()
         viewPager.post {
             try {
                 val recyclerView = viewPager.getChildAt(0) as? androidx.recyclerview.widget.RecyclerView
                 recyclerView?.let { rv ->
-                    // 保存当前位置
-                    val currentPos = viewPager.currentItem
-                    // 极短暂的滚动来触发变换，然后立即恢复
                     rv.scrollBy(1, 0)
                     rv.scrollBy(-1, 0)
                 }
             } catch (e: Exception) {
                 // 忽略
+            }
+        }
+    }
+    
+    private fun syncBottomNavigationState() {
+        if (::viewPager.isInitialized && ::bottomNavigation.isInitialized) {
+            val expectedItemId = when (expectedPagePosition) {
+                0 -> R.id.navigation_checkin
+                1 -> R.id.navigation_total
+                2 -> R.id.navigation_settings
+                else -> R.id.navigation_checkin
+            }
+            if (bottomNavigation.selectedItemId != expectedItemId) {
+                bottomNavigation.selectedItemId = expectedItemId
+            }
+            if (viewPager.currentItem != expectedPagePosition) {
+                viewPager.setCurrentItem(expectedPagePosition, false)
             }
         }
     }

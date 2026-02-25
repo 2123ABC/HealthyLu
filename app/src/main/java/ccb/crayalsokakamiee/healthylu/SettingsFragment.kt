@@ -128,7 +128,7 @@ class SettingsFragment : Fragment() {
                     val currentMode = ThemeManager.getThemeMode(requireContext())
                     if (selectedMode != currentMode) {
                         ThemeManager.setThemeMode(requireContext(), selectedMode)
-                        // 重启Activity以完全应用主题
+                        // 重启Activity以应用主题
                         requireActivity().recreate()
                     }
                 }
