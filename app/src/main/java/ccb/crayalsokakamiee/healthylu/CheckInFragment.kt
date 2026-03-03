@@ -89,12 +89,12 @@ class CheckInFragment : Fragment() {
     private fun observeData() {
         // 观察本周计数
         viewModel.weekCount.observe(viewLifecycleOwner, Observer { weekCount ->
-            tvWeekCount.text = "本周已鹿管：$weekCount 次"
+            tvWeekCount.text = getString(R.string.week_count, weekCount)
         })
 
         // 观察今日计数
         viewModel.todayCount.observe(viewLifecycleOwner, Observer { todayCount ->
-            tvTodayCount.text = "今日已鹿管：$todayCount 次"
+            tvTodayCount.text = getString(R.string.today_count, todayCount)
         })
 
         // 观察提醒文本
@@ -118,10 +118,11 @@ class CheckInFragment : Fragment() {
             R.style.ScaleFadeDialog
         }
         
-        AlertDialog.Builder(requireContext(), themeResId)
-            .setTitle("鹿管过多的坏处")
+        val context = requireContext()
+        AlertDialog.Builder(context, themeResId)
+            .setTitle(R.string.water_harm_title)
             .setMessage(viewModel.getWaterBenefitsMessage())
-            .setPositiveButton("知道了", null)
+            .setPositiveButton(R.string.got_it, null)
             .show()
     }
 

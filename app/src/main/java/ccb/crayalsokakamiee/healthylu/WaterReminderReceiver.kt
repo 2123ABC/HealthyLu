@@ -20,8 +20,8 @@ class WaterReminderReceiver : BroadcastReceiver() {
         private const val CHANNEL_ID = "water_reminder_channel"
         private const val NOTIFICATION_ID = 1001
         
-        // 定时提醒随机文案
-        private val reminderMessages = listOf(
+        // 默认文案（当用户没有配置任何启用的文案时使用）
+        private val defaultMessages = listOf(
             "这周还没有鹿管哦，记得鹿管保持性福！",
             "？快去鹿管吧~",
             "Luguanluguanlulushijiandaole",
@@ -96,6 +96,19 @@ class WaterReminderReceiver : BroadcastReceiver() {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
             alarmManager.cancel(pendingIntent)
         }
+        
+        /**
+         * 获取提醒文案列表
+         * 优先使用用户自定义的启用的文案，如果没有则使用默认文案
+         */
+        fun getReminderMessages(context: Context): List<String> {
+            val customMessages = ReminderConfigManager.getEnabledMessages(context)
+            return if (customMessages.isNotEmpty()) {
+                customMessages
+            } else {
+                defaultMessages
+            }
+        }
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -137,8 +150,9 @@ class WaterReminderReceiver : BroadcastReceiver() {
     private fun showNotification(context: Context) {
         createNotificationChannel(context)
         
-        // 随机选择一条文案
-        val message = reminderMessages[Random.nextInt(reminderMessages.size)]
+        // 从用户配置或默认文案中随机选择一条
+        val messages = getReminderMessages(context)
+        val message = messages[Random.nextInt(messages.size)]
         
         val notificationIntent = Intent(context, MainActivity::class.java)
         notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -154,6 +168,7 @@ class WaterReminderReceiver : BroadcastReceiver() {
             .setSmallIcon(R.drawable.ic_menu_info_details)
             .setContentTitle("🦌管提醒")
             .setContentText(message)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(message))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)

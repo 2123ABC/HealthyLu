@@ -25,6 +25,8 @@ class MainActivity : AppCompatActivity() {
     private var expectedPagePosition = 0
     // 标记是否正在纠正页面位置
     private var isCorrectingPosition = false
+    // 标记当前滑动是否由用户拖动发起
+    private var isFromUserDrag = false
 
     // 使用Handler管理延迟任务，避免Activity销毁后回调导致的崩溃
     private val handler = Handler(Looper.getMainLooper())
@@ -34,6 +36,12 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val PREFS_NAME = "main_activity_state"
         private const val PREF_KEY_PAGE = "saved_page"
+    }
+    
+    override fun attachBaseContext(newBase: Context) {
+        // 应用保存的语言设置
+        val context = LanguageManager.wrapContext(newBase)
+        super.attachBaseContext(context)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,18 +94,47 @@ class MainActivity : AppCompatActivity() {
             
             // ViewPager2页面切换监听，同步底部导航栏
             viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageScrollStateChanged(state: Int) {
+                    when (state) {
+                        ViewPager2.SCROLL_STATE_DRAGGING -> {
+                            // 用户开始拖动，标记这次滑动由用户发起
+                            isFromUserDrag = true
+                        }
+                        ViewPager2.SCROLL_STATE_IDLE -> {
+                            // 滑动结束，重置标记
+                            isFromUserDrag = false
+                        }
+                    }
+                }
+                
                 override fun onPageSelected(position: Int) {
                     // 如果正在纠正位置，跳过处理
                     if (isCorrectingPosition) {
                         return
                     }
                     
-                    // 如果position和期望不一致，说明是状态恢复导致的错误跳转，需要纠正
+                    // 如果是用户拖动发起的滑动，允许切换
+                    if (isFromUserDrag) {
+                        val navId = when (position) {
+                            0 -> R.id.navigation_checkin
+                            1 -> R.id.navigation_total
+                            2 -> R.id.navigation_settings
+                            else -> R.id.navigation_checkin
+                        }
+                        bottomNavigation.selectedItemId = navId
+                        expectedPagePosition = position
+                        getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                            .edit()
+                            .putInt(PREF_KEY_PAGE, position)
+                            .apply()
+                        return
+                    }
+                    
+                    // 非用户拖动情况下，如果position和期望不一致，纠正回期望位置
                     if (position != expectedPagePosition) {
                         isCorrectingPosition = true
                         viewPager.post {
                             viewPager.setCurrentItem(expectedPagePosition, false)
-                            // 纠正后同步底栏
                             val correctNavId = when (expectedPagePosition) {
                                 0 -> R.id.navigation_checkin
                                 1 -> R.id.navigation_total
@@ -105,7 +142,6 @@ class MainActivity : AppCompatActivity() {
                                 else -> R.id.navigation_checkin
                             }
                             bottomNavigation.selectedItemId = correctNavId
-                            // 延迟重置标记，确保纠正完成
                             viewPager.postDelayed({
                                 isCorrectingPosition = false
                             }, 100)
@@ -120,9 +156,7 @@ class MainActivity : AppCompatActivity() {
                         else -> R.id.navigation_checkin
                     }
                     bottomNavigation.selectedItemId = navId
-                    // 更新期望位置
                     expectedPagePosition = position
-                    // 保存当前页面位置
                     getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
                         .edit()
                         .putInt(PREF_KEY_PAGE, position)

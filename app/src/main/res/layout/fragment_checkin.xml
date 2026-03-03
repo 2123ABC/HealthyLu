@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="本周已鹿管：0 次"
+                android:text="@string/week_count"
                 android:textColor="#4CAF50"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="今日已鹿管：0 次"
+                android:text="@string/today_count"
                 android:textColor="@color/text_primary"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -66,7 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="这周还没鹿管呢，快去🦌一发吧！"
+                android:text="@string/reminder_0"
                 android:textColor="@color/text_tertiary"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -85,23 +85,31 @@
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <Button
-                                android:id="@+id/btnDrink"
-                                android:layout_width="140dp"
-                                android:layout_height="60dp"
-                                android:layout_marginEnd="24dp"
-                                android:backgroundTint="@color/success_green"
-                                android:text="我蛇了"
-                                android:textColor="@android:color/white"
-                                android:textSize="16sp" />
-                
-                            <Button
-                                android:id="@+id/btnUndo"
-                                android:layout_width="140dp"
-                                android:layout_height="60dp"
-                                android:text="撤销"
-                                android:textSize="16sp"
-                                android:textColor="@android:color/white"
-                                android:backgroundTint="@color/error_red" />
+                    android:id="@+id/btnDrink"
+                    android:layout_width="140dp"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="24dp"
+                    android:backgroundTint="@color/success_green"
+                    android:text="@string/btn_done"
+                    android:textColor="@android:color/white"
+                    android:maxLines="1"
+                    app:autoSizeTextType="uniform"
+                    app:autoSizeMinTextSize="10sp"
+                    app:autoSizeMaxTextSize="16sp"
+                    app:autoSizeStepGranularity="1sp" />
+
+                <Button
+                    android:id="@+id/btnUndo"
+                    android:layout_width="140dp"
+                    android:layout_height="60dp"
+                    android:text="@string/btn_undo"
+                    android:textColor="@android:color/white"
+                    android:backgroundTint="@color/error_red"
+                    android:maxLines="1"
+                    app:autoSizeTextType="uniform"
+                    app:autoSizeMinTextSize="10sp"
+                    app:autoSizeMaxTextSize="16sp"
+                    app:autoSizeStepGranularity="1sp" />
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -40,14 +40,14 @@ class TotalFragment : Fragment() {
         // 本周统计
         val weekCount = waterRecordManager.getWeekCount()
         val weekVolume = weekCount * 4
-        tvWeekVolume.text = "本周总量：${waterRecordManager.formatVolume(weekVolume)}"
-        tvWeekCountInfo.text = "共 $weekCount 次"
+        tvWeekVolume.text = getString(R.string.week_total, waterRecordManager.formatVolume(weekVolume))
+        tvWeekCountInfo.text = getString(R.string.total_times, weekCount)
         
         // 今日统计
         val todayCount = waterRecordManager.getTodayCount()
         val todayVolume = waterRecordManager.getTodayVolume()
-        tvTodayVolume.text = "今日总量：${waterRecordManager.formatVolume(todayVolume)}"
-        tvCountInfo.text = "共 $todayCount 次"
+        tvTodayVolume.text = getString(R.string.today_total, waterRecordManager.formatVolume(todayVolume))
+        tvCountInfo.text = getString(R.string.total_times, todayCount)
     }
 
     override fun onResume() {

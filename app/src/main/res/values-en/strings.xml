@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Healthy🦌Tracker</string>
+    
+    <!-- Bottom Navigation -->
+    <string name="nav_checkin">Check In</string>
+    <string name="nav_total">Statistics</string>
+    <string name="nav_settings">Settings &amp; About</string>
+    
+    <!-- Check In Page -->
+    <string name="week_count">This week: %1$d times</string>
+    <string name="today_count">Today: %1$d times</string>
+    <string name="btn_done">Mission Complete</string>
+    <string name="btn_undo">Undo</string>
+    <string name="water_harm_title">Harm of Excessive Use</string>
+    <string name="water_harm_content">Medical experts generally believe that masturbating twice or more per week is considered frequent. \nExcessive masturbation may lead to:\n
+Physiological issues: Long-term congestion of the reproductive system, inducing prostatitis, seminal vesiculitis, urethritis and other infections, increasing the risk of premature ejaculation and impotence.\n
+Physical and mental symptoms: listlessness, lack of concentration, weak waist and knees, decreased immunity.\n\n
+So the saying "do it when tired" is wrong!</string>
+    <string name="got_it">Got it</string>
+    
+    <!-- Reminder Messages -->
+    <string name="reminder_0">Haven\'t done it this week... your call 😏</string>
+    <string name="reminder_1">First time this week! Let the good times roll!</string>
+    <string name="reminder_2">Second time... try to keep it at twice a week max, okay?</string>
+    <string name="reminder_3_6">Hold up! Even pleasure needs recovery time!</string>
+    <string name="reminder_7">The stag has retired... 🦌</string>
+    <string name="reminder_42">The ultimate answer to life, the universe, and... this?</string>
+    <string name="reminder_8_149">For your health, please stop for this week!</string>
+    <string name="reminder_150">!? Negev?! </string>
+    <string name="reminder_233">233?! (lololol)</string>
+    <string name="reminder_300">That should be enough... right?</string>
+    <string name="reminder_520">True love confirmed ❤️</string>
+    <string name="reminder_924">The administration knows exactly why everyone\'s mad...</string>
+    <string name="reminder_1919">I\'m Japanese (wink wink) </string>
+    <string name="reminder_114514">Do you reward yourself weekly? </string>
+    <string name="reminder_260224">This app\'s birthday! 🎂</string>
+    <string name="reminder_default">Are you serious right now? </string>
+    
+    <!-- Statistics Page -->
+    <string name="total_stats_title">Statistics</string>
+    <string name="week_stats_title">Weekly Statistics</string>
+    <string name="today_stats_title">Today Statistics</string>
+    <string name="week_total">Week total: %1$s</string>
+    <string name="today_total">Today total: %1$s</string>
+    <string name="total_times">Total: %1$d times</string>
+    <string name="volume_note">4mL per time (normal male average is 2-6ml, using 4ml)</string>
+    
+    <!-- Settings Page -->
+    <string name="settings_title">Settings</string>
+    <string name="theme_mode">Theme Mode</string>
+    <string name="theme_light">Light Mode</string>
+    <string name="theme_dark">Dark Mode</string>
+    <string name="theme_system">Follow System</string>
+    
+    <string name="language">Language</string>
+    <string name="language_system">Follow System</string>
+    <string name="language_chinese">Chinese</string>
+    <string name="language_english">English</string>
+    <string name="language_changed">Language changed. Please restart the app to apply.</string>
+    
+    <string name="feature_settings">Feature Settings</string>
+    <string name="boot_startup">Boot Startup</string>
+    <string name="boot_startup_desc">Automatically start background service on boot (requires manual permission)</string>
+    <string name="background_service">Background Service</string>
+    <string name="background_service_desc">Keep background service running for scheduled reminders</string>
+    <string name="app_reminder">App Reminder</string>
+    <string name="app_reminder_desc">Detect specific app usage and remind to check in</string>
+    <string name="reminder_interval">Reminder Interval:</string>
+    <string name="reminder_interval_minute">minutes</string>
+    <string name="reminder_interval_desc">Set reminder interval, supports decimals (e.g., 0.5 for 30 seconds)</string>
+    
+    <string name="third_party_config">Third-party App Configuration</string>
+    <string name="check_permissions">Check App Permissions</string>
+    <string name="clear_data">Clear App Data</string>
+    <string name="clear_logs">Clear Logs</string>
+    
+    <string name="about">About</string>
+    <string name="about_author">About Author</string>
+    <string name="github_repo">GitHub Repository</string>
+    
+    <!-- Messages -->
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="skip">Skip</string>
+    <string name="later">Later</string>
+    <string name="start_setup">Start Setup</string>
+    
+    <string name="confirm_clear">Confirm Clear</string>
+    <string name="confirm_clear_data">Are you sure you want to clear all data? This action cannot be undone.</string>
+    <string name="data_logs_cleared">Data and logs cleared</string>
+    <string name="logs_cleared">Logs cleared</string>
+    <string name="confirm_clear_logs_title">Confirm Clear Logs</string>
+    <string name="current_log_size">Current log size: %1$s</string>
+    <string name="confirm_clear_logs_msg">Are you sure you want to clear all logs? This action cannot be undone.</string>
+    
+    <string name="boot_startup_enabled">Boot startup enabled</string>
+    <string name="boot_startup_disabled">Boot startup disabled</string>
+    <string name="background_service_enabled">Background service enabled</string>
+    <string name="background_service_disabled">Background service disabled</string>
+    <string name="app_reminder_enabled">App reminder enabled</string>
+    <string name="app_reminder_disabled">App reminder disabled</string>
+    
+    <string name="reminder_interval_set">Reminder interval set to %1$s minutes</string>
+    <string name="invalid_interval">Please enter a valid interval</string>
+    
+    <!-- Permissions -->
+    <string name="permissions_needed">Permissions Needed</string>
+    <string name="permissions_needed_desc">The following permissions are required for the best experience:</string>
+    <string name="permission_notification">Notification Permission - For displaying reminder notifications</string>
+    <string name="permission_exact_alarm">Alarm &amp; Reminder Permission - For setting precise scheduled reminders</string>
+    <string name="permission_usage_stats">Usage Access Permission - For detecting foreground apps and reminding to check in</string>
+    <string name="permissions_setup_guide">Click "Start Setup" to enable each permission.</string>
+    <string name="all_permissions_enabled">All permissions enabled</string>
+    <string name="permissions_setup_complete">Permission setup complete!</string>
+    
+    <string name="notification_permission_title">Notification Permission</string>
+    <string name="notification_permission_desc">Please enable notification permission to receive reminders.</string>
+    <string name="exact_alarm_permission_title">Alarm &amp; Reminder Permission</string>
+    <string name="exact_alarm_permission_desc">Please enable "Alarms &amp; reminders" permission for precise scheduled reminders.
+
+This ensures reminders are delivered on time.</string>
+    <string name="usage_stats_permission_title">Usage Access Permission</string>
+    <string name="usage_stats_permission_desc">Please enable usage access permission to detect foreground apps.
+
+Find "HealthyLu" in the list and enable the permission.</string>
+    <string name="go_enable">Go Enable</string>
+    <string name="cannot_open_settings">Cannot open settings page</string>
+    
+    <!-- Version -->
+    <string name="version">Version</string>
+    <string name="version_format">Version %1$s</string>
+    <string name="version_unknown">Version Unknown</string>
+    
+    <!-- App Slogan -->
+    <string name="app_slogan">HealthyTracker - Your Self-Discipline Companion</string>
+    
+    <!-- Third-party App Config -->
+    <string name="third_party_config_title">Third-party App Configuration</string>
+    <string name="third_party_config_hint">Long press to delete a config</string>
+    <string name="third_party_empty_hint">No configurations yet\nTap + to add a config</string>
+    <string name="btn_export">Export</string>
+    <string name="btn_import">Import</string>
+    <string name="btn_add_config">Add Config</string>
+    <string name="btn_edit_config">Edit Config</string>
+    <string name="btn_save">Save</string>
+    <string name="app_name_label">App Name</string>
+    <string name="app_name_hint">Enter app name/note</string>
+    <string name="app_package_label">Package Name</string>
+    <string name="app_package_hint">Enter package name</string>
+    <string name="custom_info_label">Custom Info</string>
+    <string name="custom_info_prefix">Info</string>
+    <string name="custom_info_hint">Enter info content</string>
+    <string name="confirm_delete_title">Confirm Delete</string>
+    <string name="confirm_delete_msg">Delete config \"%1$s\"?</string>
+    <string name="config_deleted">Config deleted</string>
+    <string name="config_saved">Config saved</string>
+    <string name="enter_app_name">Please enter app name</string>
+    <string name="enter_package_name">Please enter package name</string>
+    <string name="package_exists">Package name already exists</string>
+    <string name="keep_one_info">At least one info item required</string>
+    <string name="no_config_to_export">No configs to export</string>
+    <string name="config_exported">Config exported</string>
+    <string name="export_failed">Export failed: %1$s</string>
+    <string name="import_failed">Import failed: %1$s</string>
+    <string name="import_config_title">Import Config</string>
+    <string name="import_option_merge">Merge (keep existing)</string>
+    <string name="import_option_replace">Replace (clear existing)</string>
+    <string name="import_result">Import complete: %1$d added, %2$d updated</string>
+    <string name="import_replaced">Replaced with %1$d imported configs</string>
+    <string name="cannot_open_file_picker">Cannot open file picker: %1$s</string>
+    <string name="cannot_open_file_saver">Cannot open file saver: %1$s</string>
+
+    <!-- Reminder Config -->
+    <string name="reminder_config">Reminder Messages</string>
+    <string name="reminder_config_title">Reminder Messages</string>
+    <string name="reminder_config_hint">Long press to delete a message</string>
+    <string name="reminder_config_empty_hint">No messages yet\nTap + to add a message</string>
+    <string name="btn_add_reminder">Add Message</string>
+    <string name="btn_edit_reminder">Edit Message</string>
+    <string name="reminder_message_label">Reminder Message</string>
+    <string name="reminder_message_hint">Enter reminder message</string>
+    <string name="reminder_message_empty">Please enter reminder message</string>
+    <string name="reminder_default_message">Time to check in!</string>
+    <string name="confirm_delete_reminder_msg">Delete this message?\n%1$s</string>
+    <string name="reminder_config_deleted">Message deleted</string>
+    <string name="reminder_config_saved">Message saved</string>
+    <string name="reminder_config_exported">Messages exported</string>
+    
+    <!-- About Author -->
+    <string name="author_title">About Author</string>
+    <string name="author_info">Author: HengryCray(Also Kakamiee and MekoNacho).</string>
+    <string name="author_desc">This app has limited effects. It can only help you self-discipline, not force you to do so.</string>
+    <string name="author_visit_bilibili">Visit my Bilibili? Follow me!</string>
+    <string name="author_skip">Nah, I\'ll just use it for free</string>
+    <string name="author_statement_1">I made this app for a few reasons:\n1. To help my buddies develop healthy habits\n2. This project seemed interesting\n\nDon\'t you think this app might actually be useful?</string>
+    <string name="author_statement_2">You\'re still here? Alright, fun fact:\nThis app exists because someone\'s winter break was only 13 days.\nEVEN shorter than most game events.\nJust saying.\n\nClose and reopen to see other messages!</string>
+    <string name="author_statement_3">Fun fact #2:\nSome assignments are just... unnecessary.\nWhat can I say?\n\nClose and reopen to see other messages!</string>
+</resources>

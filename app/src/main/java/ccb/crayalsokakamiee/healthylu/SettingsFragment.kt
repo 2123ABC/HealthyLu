@@ -26,7 +26,10 @@ class SettingsFragment : Fragment() {
     private lateinit var btnClearData: Button
     private lateinit var btnClearLogs: Button
     private lateinit var spinnerThemeMode: Spinner
+    private lateinit var spinnerLanguage: Spinner
     private lateinit var btnCheckPermissions: Button
+    private lateinit var btnThirdPartyConfig: Button
+    private lateinit var btnReminderConfig: Button
     private lateinit var btnAuthor: Button
     private lateinit var btnGithub: Button
     private lateinit var cbBootStartup: CheckBox
@@ -54,9 +57,12 @@ class SettingsFragment : Fragment() {
         btnClearData = view.findViewById(R.id.btnClearData)
         btnClearLogs = view.findViewById(R.id.btnClearLogs)
         btnCheckPermissions = view.findViewById(R.id.btnCheckPermissions)
+        btnThirdPartyConfig = view.findViewById(R.id.btnThirdPartyConfig)
+        btnReminderConfig = view.findViewById(R.id.btnReminderConfig)
         btnAuthor = view.findViewById(R.id.btnAuthor)
         btnGithub = view.findViewById(R.id.btnGithub)
         spinnerThemeMode = view.findViewById(R.id.spinnerThemeMode)
+        spinnerLanguage = view.findViewById(R.id.spinnerLanguage)
         cbBootStartup = view.findViewById(R.id.cbBootStartup)
         cbBackgroundService = view.findViewById(R.id.cbBackgroundService)
         cbAppReminder = view.findViewById(R.id.cbAppReminder)
@@ -66,9 +72,9 @@ class SettingsFragment : Fragment() {
         // 设置版本号
         try {
             val versionName = requireContext().packageManager.getPackageInfo(requireContext().packageName, 0).versionName
-            tvVersion.text = "版本 $versionName"
+            tvVersion.text = getString(R.string.version_format, versionName)
         } catch (e: Exception) {
-            tvVersion.text = "版本 未知"
+            tvVersion.text = getString(R.string.version_unknown)
         }
 
         btnClearData.setOnClickListener {
@@ -81,6 +87,14 @@ class SettingsFragment : Fragment() {
 
         btnCheckPermissions.setOnClickListener {
             checkAllPermissions()
+        }
+
+        btnThirdPartyConfig.setOnClickListener {
+            openThirdPartyConfig()
+        }
+
+        btnReminderConfig.setOnClickListener {
+            openReminderConfig()
         }
 
         btnAuthor.setOnClickListener {
@@ -97,6 +111,9 @@ class SettingsFragment : Fragment() {
         // 设置主题模式选择器
         setupThemeModeSpinner()
         
+        // 设置语言选择器
+        setupLanguageSpinner()
+        
         // 防止Spinner初始化时触发不必要的背景更新
         isSpinnerInitialized = false
         view.post {
@@ -111,7 +128,11 @@ class SettingsFragment : Fragment() {
     }
     
     private fun setupThemeModeSpinner() {
-        val themeOptions = arrayOf("白天模式", "黑夜模式", "跟随系统")
+        val themeOptions = arrayOf(
+            getString(R.string.theme_light),
+            getString(R.string.theme_dark),
+            getString(R.string.theme_system)
+        )
         val themeValues = arrayOf(
             ThemeManager.THEME_MODE_LIGHT,
             ThemeManager.THEME_MODE_DARK,
@@ -154,6 +175,51 @@ class SettingsFragment : Fragment() {
         }
     }
     
+    private fun setupLanguageSpinner() {
+        val languageOptions = arrayOf(
+            getString(R.string.language_system),
+            getString(R.string.language_chinese),
+            getString(R.string.language_english)
+        )
+        val languageValues = arrayOf(
+            LanguageManager.LANGUAGE_SYSTEM,
+            LanguageManager.LANGUAGE_CHINESE,
+            LanguageManager.LANGUAGE_ENGLISH
+        )
+        
+        spinnerLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                if (isSpinnerInitialized) {
+                    val selectedLanguage = languageValues[position]
+                    val currentLanguage = LanguageManager.getSavedLanguage(requireContext())
+                    if (selectedLanguage != currentLanguage) {
+                        LanguageManager.setLanguage(requireContext(), selectedLanguage)
+                        showToast(getString(R.string.language_changed))
+                        // 重启Activity以应用语言
+                        requireActivity().recreate()
+                    }
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+        
+        val adapter = android.widget.ArrayAdapter(
+            requireContext(),
+            R.layout.spinner_item,
+            languageOptions
+        )
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+        spinnerLanguage.adapter = adapter
+        
+        // 获取当前保存的语言设置
+        val currentLanguage = LanguageManager.getSavedLanguage(requireContext())
+        val selectedIndex = languageValues.indexOf(currentLanguage)
+        if (selectedIndex >= 0) {
+            spinnerLanguage.setSelection(selectedIndex, false)
+        }
+    }
+    
     /**
      * 设置功能开关（开机启动、后台驻留、应用提醒）
      */
@@ -166,12 +232,12 @@ class SettingsFragment : Fragment() {
         // 设置监听器
         cbBootStartup.setOnCheckedChangeListener { _, isChecked ->
             AppSettingsManager.setBootStartupEnabled(requireContext(), isChecked)
-            showToast(if (isChecked) "已开启开机启动" else "已关闭开机启动")
+            showToast(if (isChecked) getString(R.string.boot_startup_enabled) else getString(R.string.boot_startup_disabled))
         }
         
         cbBackgroundService.setOnCheckedChangeListener { _, isChecked ->
             AppSettingsManager.setBackgroundServiceEnabled(requireContext(), isChecked)
-            showToast(if (isChecked) "已开启后台驻留" else "已关闭后台驻留")
+            showToast(if (isChecked) getString(R.string.background_service_enabled) else getString(R.string.background_service_disabled))
             
             // 如果关闭后台驻留，停止服务；如果开启，启动服务
             if (!isChecked) {
@@ -183,7 +249,7 @@ class SettingsFragment : Fragment() {
         
         cbAppReminder.setOnCheckedChangeListener { _, isChecked ->
             AppSettingsManager.setAppReminderEnabled(requireContext(), isChecked)
-            showToast(if (isChecked) "已开启应用提醒" else "已关闭应用提醒")
+            showToast(if (isChecked) getString(R.string.app_reminder_enabled) else getString(R.string.app_reminder_disabled))
         }
         
         // 提醒间隔设置
@@ -205,7 +271,7 @@ class SettingsFragment : Fragment() {
         val interval = text.toFloatOrNull()
         
         if (interval == null || interval <= 0) {
-            showToast("请输入有效的时间间隔")
+            showToast(getString(R.string.invalid_interval))
             etReminderInterval.setText(AppSettingsManager.getReminderIntervalMinutes(requireContext()).toString())
             return
         }
@@ -216,7 +282,7 @@ class SettingsFragment : Fragment() {
         WaterReminderReceiver.cancelReminder(requireContext())
         WaterReminderReceiver.scheduleHourlyReminder(requireContext())
         
-        showToast("提醒间隔已设置为 $interval 分钟")
+        showToast(getString(R.string.reminder_interval_set, interval.toString()))
     }
     
     private fun showToast(message: String) {
@@ -253,35 +319,36 @@ class SettingsFragment : Fragment() {
         val missingPermissions = mutableListOf<String>()
         
         if (!hasNotificationPermission) {
-            missingPermissions.add("通知权限 - 用于显示鹿管提醒通知")
+            missingPermissions.add(getString(R.string.permission_notification))
         }
         if (!hasExactAlarmPermission) {
-            missingPermissions.add("闹钟和提醒权限 - 用于设置精确的定时提醒")
+            missingPermissions.add(getString(R.string.permission_exact_alarm))
         }
         if (!hasUsageStats) {
-            missingPermissions.add("使用情况访问权限 - 用于检测前台应用，在打开H软件时提醒打卡")
+            missingPermissions.add(getString(R.string.permission_usage_stats))
         }
         
         if (missingPermissions.isNotEmpty()) {
             val message = buildString {
-                append("以下权限需要开启以获得最佳体验：\n\n")
+                append(getString(R.string.permissions_needed_desc))
+                append("\n\n")
                 missingPermissions.forEachIndexed { index, perm ->
                     append("${index + 1}. $perm\n\n")
                 }
-                append("点击\"开始设置\"将依次引导您开启各项权限。")
+                append(getString(R.string.permissions_setup_guide))
             }
             
             AlertDialog.Builder(requireContext())
-                .setTitle("需要权限")
+                .setTitle(R.string.permissions_needed)
                 .setMessage(message)
-                .setPositiveButton("开始设置") { _, _ ->
+                .setPositiveButton(R.string.start_setup) { _, _ ->
                     // 开始依次引导用户设置权限
                     startPermissionSetupFlow()
                 }
-                .setNegativeButton("稍后再说", null)
+                .setNegativeButton(R.string.later, null)
                 .show()
         } else {
-            Toast.makeText(requireContext(), "所有权限已开启", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), R.string.all_permissions_enabled, Toast.LENGTH_SHORT).show()
         }
     }
     
@@ -301,9 +368,9 @@ class SettingsFragment : Fragment() {
                 // 第一步：通知权限
                 if (!hasNotificationPermission()) {
                     showPermissionGuideDialog(
-                        "通知权限",
-                        "请开启通知权限以接收鹿管提醒通知。",
-                        "去开启"
+                        getString(R.string.notification_permission_title),
+                        getString(R.string.notification_permission_desc),
+                        getString(R.string.go_enable)
                     ) {
                         openNotificationSettings()
                     }
@@ -316,9 +383,9 @@ class SettingsFragment : Fragment() {
                 // 第二步：精确闹钟权限
                 if (!hasExactAlarmPermission()) {
                     showPermissionGuideDialog(
-                        "闹钟和提醒权限",
-                        "请开启「闹钟和提醒」权限以设置精确的定时提醒。\n\n开启后可以确保定时提醒准时送达。",
-                        "去开启"
+                        getString(R.string.exact_alarm_permission_title),
+                        getString(R.string.exact_alarm_permission_desc),
+                        getString(R.string.go_enable)
                     ) {
                         openExactAlarmSettings()
                     }
@@ -331,9 +398,9 @@ class SettingsFragment : Fragment() {
                 // 第三步：使用情况访问权限
                 if (!hasUsageStatsPermission()) {
                     showPermissionGuideDialog(
-                        "使用情况访问权限",
-                        "请开启使用情况访问权限以检测前台应用。\n\n在列表中找到「健康鹿管」并开启权限。",
-                        "去开启"
+                        getString(R.string.usage_stats_permission_title),
+                        getString(R.string.usage_stats_permission_desc),
+                        getString(R.string.go_enable)
                     ) {
                         openUsageStatsSettings()
                     }
@@ -344,7 +411,7 @@ class SettingsFragment : Fragment() {
             }
             else -> {
                 // 所有权限设置完成
-                Toast.makeText(requireContext(), "权限设置完成！", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.permissions_setup_complete, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -356,7 +423,7 @@ class SettingsFragment : Fragment() {
             .setPositiveButton(buttonText) { _, _ ->
                 action()
             }
-            .setNegativeButton("跳过") { _, _ ->
+            .setNegativeButton(R.string.skip) { _, _ ->
                 currentPermissionStep++
                 requestNextPermission()
             }
@@ -384,7 +451,7 @@ class SettingsFragment : Fragment() {
             val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
             startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(requireContext(), "无法打开设置页面", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), R.string.cannot_open_settings, Toast.LENGTH_SHORT).show()
         }
     }
     
@@ -394,7 +461,7 @@ class SettingsFragment : Fragment() {
             intent.data = Uri.parse("package:" + requireContext().packageName)
             startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(requireContext(), "无法打开设置页面", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), R.string.cannot_open_settings, Toast.LENGTH_SHORT).show()
         }
     }
     
@@ -447,15 +514,15 @@ class SettingsFragment : Fragment() {
 
     private fun showClearDataDialog() {
         AlertDialog.Builder(requireContext())
-            .setTitle("确认清除")
-            .setMessage("确定要清除所有数据吗？此操作不可恢复。")
-            .setPositiveButton("确定") { _, _ ->
+            .setTitle(R.string.confirm_clear)
+            .setMessage(R.string.confirm_clear_data)
+            .setPositiveButton(R.string.confirm) { _, _ ->
                 waterRecordManager.clearAllData()
                 LogManager.clearLogs()
-                Toast.makeText(requireContext(), "数据和日志已清除", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.data_logs_cleared, Toast.LENGTH_SHORT).show()
                 updateClearLogsButtonText()
             }
-            .setNegativeButton("取消", null)
+            .setNegativeButton(R.string.cancel, null)
             .show()
     }
 
@@ -465,9 +532,9 @@ class SettingsFragment : Fragment() {
 
     private fun showAuthorInfo() {
         val randomStatements = listOf(
-            "做这个软件呢，有以下几个原因\n一是为了帮助我的好兄弟养成健康的习惯\n二是感觉这个项目挺有意思的\n\n你不觉得这种软件好像真的有点用吗？",
-            "我去你的吧司马矛石玉伟书记\n放寒假13天我说白了比他妈的游戏新年活动都短\n戾气太重了真是对不起\n把这个关了再开一次看看别的？",
-            "猪鼻李乃王也是出生\n没必要写的征文硬要我们写\nWhat can I say?"
+            getString(R.string.author_statement_1),
+            getString(R.string.author_statement_2),
+            getString(R.string.author_statement_3)
         )
         val randomStatement = randomStatements[kotlin.random.Random.nextInt(randomStatements.size)]
         
@@ -475,19 +542,19 @@ class SettingsFragment : Fragment() {
         val versionName = try {
             requireContext().packageManager.getPackageInfo(requireContext().packageName, 0).versionName
         } catch (e: Exception) {
-            "未知"
+            getString(R.string.version_unknown)
         }
         
         AlertDialog.Builder(requireContext())
-            .setTitle("关于作者")
-            .setMessage("版本：$versionName\n\n作者：HengryCray(Also Kakamiee and MekoNacho)。\n\n这个软件终归是作用有限的，它能做到的只有监督你自律，而不是控制你自律\n\n$randomStatement")
-            .setPositiveButton("去我的B站主页看看？顺便点个关注吧") { _, _ ->
+            .setTitle(R.string.author_title)
+            .setMessage("${getString(R.string.version)}: $versionName\n\n${getString(R.string.author_info)}\n\n${getString(R.string.author_desc)}\n\n$randomStatement")
+            .setPositiveButton(R.string.author_visit_bilibili) { _, _ ->
                 // 点击确定后跳转到 rickroll 网页
                 val rickrollUrl = "https://space.bilibili.com/474494752"
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(rickrollUrl))
                 startActivity(intent)
             }
-            .setNegativeButton("算了算了白嫖软件挺好的", null)
+            .setNegativeButton(R.string.author_skip, null)
             .show()
     }
 
@@ -497,12 +564,22 @@ class SettingsFragment : Fragment() {
         startActivity(intent)
     }
 
+    private fun openThirdPartyConfig() {
+        val intent = Intent(requireContext(), ThirdPartyAppConfigActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun openReminderConfig() {
+        val intent = Intent(requireContext(), ReminderConfigActivity::class.java)
+        startActivity(intent)
+    }
+
     /**
      * 更新清除日志按钮的文本，显示当前日志大小
      */
     private fun updateClearLogsButtonText() {
         val logSize = LogManager.getFormattedLogSize()
-        btnClearLogs.text = "清除日志 ($logSize)"
+        btnClearLogs.text = "${getString(R.string.clear_logs)} ($logSize)"
     }
 
     /**
@@ -512,14 +589,14 @@ class SettingsFragment : Fragment() {
         val logSize = LogManager.getFormattedLogSize()
 
         AlertDialog.Builder(requireContext())
-            .setTitle("确认清除日志")
-            .setMessage("当前日志大小：$logSize\n\n确定要清除所有日志吗？此操作不可恢复。")
-            .setPositiveButton("确定") { _, _ ->
+            .setTitle(R.string.confirm_clear_logs_title)
+            .setMessage("${getString(R.string.current_log_size, logSize)}\n\n${getString(R.string.confirm_clear_logs_msg)}")
+            .setPositiveButton(R.string.confirm) { _, _ ->
                 LogManager.clearLogs()
-                Toast.makeText(requireContext(), "日志已清除", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.logs_cleared, Toast.LENGTH_SHORT).show()
                 updateClearLogsButtonText()
             }
-            .setNegativeButton("取消", null)
+            .setNegativeButton(R.string.cancel, null)
             .show()
     }
 }

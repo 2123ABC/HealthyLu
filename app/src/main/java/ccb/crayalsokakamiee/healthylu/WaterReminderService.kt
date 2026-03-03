@@ -22,16 +22,6 @@ class WaterReminderService : Service() {
         const val NOTIFICATION_ID = 1002
         const val READING_REMINDER_CHANNEL_ID = "reading_reminder"
         const val READING_REMINDER_NOTIFICATION_ID = 1003
-        
-        // 需要检测的应用包名列表
-        val TARGET_PACKAGES = listOf(
-            "com.xjs.ehviewer",      // EHViewer
-            "com.perol.pixez", //PixEz
-            "com.JMComic3.app", //JMComic
-            "com.picacomic.fregata", //哔咔
-            "sg.jxrgq.wbbzrf", //91
-            "jp.pxv.android" //Pixiv
-        )
     }
 
     private val handler = Handler(Looper.getMainLooper())
@@ -45,34 +35,8 @@ class WaterReminderService : Service() {
     // 使用WeakReference避免内存泄漏
     private val serviceRef = java.lang.ref.WeakReference(this)
     
-    // 各应用的专属提醒文案（每个应用3条）
-    private val appReminderMessages = mapOf(
-        "com.xjs.ehviewer" to listOf(
-            "EHViewer启动！",
-            "今天来的大家想看的东西啊",
-            "无码同人志！爽！"
-        ),
-        "com.perol.pixez" to listOf(
-            "P站启动！",
-            "不用翻墙就是爽！",
-            "来点色图"
-        ),
-        "com.JMComic3.app" to listOf(
-            "禁漫！爽！",
-            "记得去签到",
-            "向传奇禁漫汉化组设敬！"
-        ),
-        "sg.jxrgq.wbbzrf" to listOf(
-            "7891",
-            "第91号隐私协议启动",
-            "警惕91破解版！虽然你可能听不进去但还是警告一下"
-        ),
-        "jp.pxv.android" to listOf(
-            "Pixiv——日本最大的插画交流网站",
-            "如果你只是来看二次元图片的话请把这个消息划掉",
-            "抱着普通看图的心情的话请无视这条消息"
-        )
-    )
+    // 缓存的配置列表
+    private var cachedConfigs: List<ThirdPartyAppConfig> = emptyList()
     
     // 后台服务通知随机文案
     private val serviceStatusMessages = listOf(
@@ -111,8 +75,30 @@ class WaterReminderService : Service() {
         createNotificationChannel()
         createReadingReminderChannel()
         
+        // 加载配置
+        loadConfigs()
+        
         // 启动定时提醒
         schedulePeriodicReminder()
+    }
+    
+    private fun loadConfigs() {
+        cachedConfigs = ThirdPartyAppConfigManager.getAllConfigs(this)
+        android.util.Log.d("WaterReminderService", "Loaded ${cachedConfigs.size} app configs")
+    }
+    
+    /**
+     * 获取所有目标包名
+     */
+    private fun getTargetPackages(): List<String> {
+        return cachedConfigs.map { it.packageName }
+    }
+    
+    /**
+     * 根据包名获取提醒文案
+     */
+    private fun getReminderMessages(packageName: String): List<String> {
+        return cachedConfigs.find { it.packageName == packageName }?.customInfos ?: listOf("鹿管打卡吧！")
     }
     
     private fun schedulePeriodicReminder() {
@@ -248,12 +234,14 @@ class WaterReminderService : Service() {
                     endTime
                 )
                 
+                val targetPackages = getTargetPackages()
+                
                 if (usageStatsList != null && usageStatsList.isNotEmpty()) {
                     // 按最后使用时间排序，获取最近使用的应用
                     val sortedStats = usageStatsList.sortedByDescending { it.lastTimeUsed }
                     val foregroundApp = sortedStats.firstOrNull()?.packageName
                     
-                    if (foregroundApp != null && foregroundApp in TARGET_PACKAGES) {
+                    if (foregroundApp != null && foregroundApp in targetPackages) {
                         // 检查是否需要显示提醒（冷却机制）
                         val currentTime = System.currentTimeMillis()
                         val shouldShowReminder = when {
@@ -328,7 +316,7 @@ class WaterReminderService : Service() {
     
     private fun showReadingReminder(packageName: String) {
         // 根据应用包名获取对应的提醒文案
-        val messages = appReminderMessages[packageName] ?: listOf("鹿管打卡吧！")
+        val messages = getReminderMessages(packageName)
         // 随机选择一条
         val message = messages[Random.nextInt(messages.size)]
         

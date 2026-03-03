@@ -27,6 +27,10 @@ object LogManager {
     private var crashLogFile: File? = null
     private var isInitialized = false
 
+    // 清除标志，防止竞态条件
+    @Volatile
+    private var isClearing = false
+
     // 使用队列和线程池异步写入日志，避免阻塞主线程
     private val logQueue = ConcurrentLinkedQueue<String>()
     private val executor = Executors.newSingleThreadExecutor()
@@ -93,6 +97,11 @@ object LogManager {
         executor.submit {
             while (true) {
                 try {
+                    // 清除期间跳过写入
+                    if (isClearing) {
+                        Thread.sleep(50)
+                        continue
+                    }
                     val logMessage = logQueue.poll()
                     if (logMessage != null) {
                         writeToFile(logFile, logMessage)
@@ -170,7 +179,7 @@ object LogManager {
      * 添加日志到队列
      */
     private fun addLog(level: String, tag: String, message: String) {
-        if (!isInitialized) return
+        if (!isInitialized || isClearing) return
 
         val timestamp = dateFormat.format(Date())
         val logMessage = "[$timestamp] [$level] [$tag] $message"
@@ -213,11 +222,18 @@ object LogManager {
      */
     fun clearLogs() {
         try {
+            isClearing = true
+            // 等待后台线程暂停写入
+            Thread.sleep(150)
+            // 清空队列中待写入的日志
+            logQueue.clear()
+            // 删除日志文件
             logFile?.delete()
             crashLogFile?.delete()
-            i("LogManager", "All logs cleared")
         } catch (e: Exception) {
             Log.e("LogManager", "Error clearing logs: ${e.message}", e)
+        } finally {
+            isClearing = false
         }
     }
 

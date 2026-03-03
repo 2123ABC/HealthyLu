@@ -1,3 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">健康🦌管</string>
+    
+    <!-- 底部导航 -->
+    <string name="nav_checkin">打卡</string>
+    <string name="nav_total">总量</string>
+    <string name="nav_settings">设置和关于</string>
+    
+    <!-- 打卡页面 -->
+    <string name="week_count">本周已鹿管：%1$d 次</string>
+    <string name="today_count">今日已鹿管：%1$d 次</string>
+    <string name="btn_done">我蛇了</string>
+    <string name="btn_undo">撤销</string>
+    <string name="water_harm_title">鹿管过多的坏处</string>
+    <string name="water_harm_content">医学专家普遍认为，每周手淫两次或以上属于频繁手淫。过度手淫可能导致：\n生理问题：生殖系统长期充血，诱发前列腺炎、精囊炎、尿道炎等感染，增加早泄、阳痿风险。\n身心症状：精神萎靡、注意力不集中、腰膝酸软、免疫力下降。\n\n所以说疲了累了🦌一发的说法是不对的！</string>
+    <string name="got_it">知道了</string>
+    
+    <!-- 打卡提示语 -->
+    <string name="reminder_0">这周还没鹿管呢，快去🦌一发吧！</string>
+    <string name="reminder_1">本周第一次🦌，开启性福生活！</string>
+    <string name="reminder_2">第二次🦌了，尽量做到一周最多两次哦</string>
+    <string name="reminder_3_6">不要再🦌了，舒服过后也是要休息一下的！</string>
+    <string name="reminder_7">小鹿燃尽了...</string>
+    <string name="reminder_42">宇宙的终极奥秘？</string>
+    <string name="reminder_8_149">为了你的身体，这周不要再🦌了！</string>
+    <string name="reminder_150">！？内格夫？！</string>
+    <string name="reminder_233">233?!</string>
+    <string name="reminder_300">应该够吧</string>
+    <string name="reminder_520">看的出来是真爱</string>
+    <string name="reminder_924">出生校领导自己不清楚自己被多少人骂？</string>
+    <string name="reminder_1919">我是日本人(doge)</string>
+    <string name="reminder_114514">每周会做奖励自己的事情吗？</string>
+    <string name="reminder_260224">这个软件出生的日子</string>
+    <string name="reminder_default">你在玩我吗</string>
+    
+    <!-- 统计页面 -->
+    <string name="total_stats_title">总量统计</string>
+    <string name="week_stats_title">本周统计</string>
+    <string name="today_stats_title">今日统计</string>
+    <string name="week_total">本周总量：%1$s</string>
+    <string name="today_total">今日总量：%1$s</string>
+    <string name="total_times">共 %1$d 次</string>
+    <string name="volume_note">每次 4mL（正常男性平均的量在2ml到6ml，这里取4ml）</string>
+    
+    <!-- 设置页面 -->
+    <string name="settings_title">设置</string>
+    <string name="theme_mode">主题模式</string>
+    <string name="theme_light">白天模式</string>
+    <string name="theme_dark">黑夜模式</string>
+    <string name="theme_system">跟随系统</string>
+    
+    <string name="language">语言</string>
+    <string name="language_system">跟随系统</string>
+    <string name="language_chinese">中文</string>
+    <string name="language_english">英文</string>
+    <string name="language_changed">语言已更改，重启应用后生效</string>
+    
+    <string name="feature_settings">功能设置</string>
+    <string name="boot_startup">开机启动</string>
+    <string name="boot_startup_desc">开机后自动启动后台服务（需要手动开启自启动权限）</string>
+    <string name="background_service">后台驻留</string>
+    <string name="background_service_desc">保持后台服务运行以提供定时提醒</string>
+    <string name="app_reminder">应用提醒</string>
+    <string name="app_reminder_desc">检测特定应用使用并提醒打卡</string>
+    <string name="reminder_interval">定时提醒间隔：</string>
+    <string name="reminder_interval_minute">分钟</string>
+    <string name="reminder_interval_desc">设置定时提醒的时间间隔，支持小数（如 0.5 表示30秒）</string>
+    
+    <string name="third_party_config">第三方应用信息配置管理</string>
+    <string name="check_permissions">检查应用权限</string>
+    <string name="clear_data">清除应用数据</string>
+    <string name="clear_logs">清除日志</string>
+    
+    <string name="about">关于</string>
+    <string name="about_author">关于作者</string>
+    <string name="github_repo">GitHub 项目地址</string>
+    
+    <!-- 提示信息 -->
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
+    <string name="skip">跳过</string>
+    <string name="later">稍后再说</string>
+    <string name="start_setup">开始设置</string>
+    
+    <string name="confirm_clear">确认清除</string>
+    <string name="confirm_clear_data">确定要清除所有数据吗？此操作不可恢复。</string>
+    <string name="data_logs_cleared">数据和日志已清除</string>
+    <string name="logs_cleared">日志已清除</string>
+    <string name="confirm_clear_logs_title">确认清除日志</string>
+    <string name="current_log_size">当前日志大小：%1$s</string>
+    <string name="confirm_clear_logs_msg">确定要清除所有日志吗？此操作不可恢复。</string>
+    
+    <string name="boot_startup_enabled">已开启开机启动</string>
+    <string name="boot_startup_disabled">已关闭开机启动</string>
+    <string name="background_service_enabled">已开启后台驻留</string>
+    <string name="background_service_disabled">已关闭后台驻留</string>
+    <string name="app_reminder_enabled">已开启应用提醒</string>
+    <string name="app_reminder_disabled">已关闭应用提醒</string>
+    
+    <string name="reminder_interval_set">提醒间隔已设置为 %1$s 分钟</string>
+    <string name="invalid_interval">请输入有效的时间间隔</string>
+    
+    <!-- 权限相关 -->
+    <string name="permissions_needed">需要权限</string>
+    <string name="permissions_needed_desc">以下权限需要开启以获得最佳体验：</string>
+    <string name="permission_notification">通知权限 - 用于显示鹿管提醒通知</string>
+    <string name="permission_exact_alarm">闹钟和提醒权限 - 用于设置精确的定时提醒</string>
+    <string name="permission_usage_stats">使用情况访问权限 - 用于检测前台应用，在打开H软件时提醒打卡</string>
+    <string name="permissions_setup_guide">点击\"开始设置\"将依次引导您开启各项权限。</string>
+    <string name="all_permissions_enabled">所有权限已开启</string>
+    <string name="permissions_setup_complete">权限设置完成！</string>
+    
+    <string name="notification_permission_title">通知权限</string>
+    <string name="notification_permission_desc">请开启通知权限以接收鹿管提醒通知。</string>
+    <string name="exact_alarm_permission_title">闹钟和提醒权限</string>
+    <string name="exact_alarm_permission_desc">请开启「闹钟和提醒」权限以设置精确的定时提醒。\n\n开启后可以确保定时提醒准时送达。</string>
+    <string name="usage_stats_permission_title">使用情况访问权限</string>
+    <string name="usage_stats_permission_desc">请开启使用情况访问权限以检测前台应用。\n\n在列表中找到「健康鹿管」并开启权限。</string>
+    <string name="go_enable">去开启</string>
+    <string name="cannot_open_settings">无法打开设置页面</string>
+    
+    <!-- 版本 -->
+    <string name="version">版本</string>
+    <string name="version_format">版本 %1$s</string>
+    <string name="version_unknown">版本 未知</string>
+    
+    <!-- 应用标语 -->
+    <string name="app_slogan">HealthyLu - 健康鹿管记录助手</string>
+    
+    <!-- 第三方应用配置 -->
+    <string name="third_party_config_title">第三方应用信息配置管理</string>
+    <string name="third_party_config_hint">长按删除选项</string>
+    <string name="third_party_empty_hint">暂无配置\n点击右下角+添加配置</string>
+    <string name="btn_export">导出配置</string>
+    <string name="btn_import">导入配置</string>
+    <string name="btn_add_config">添加配置</string>
+    <string name="btn_edit_config">编辑配置</string>
+    <string name="btn_save">保存</string>
+    <string name="app_name_label">应用名称</string>
+    <string name="app_name_hint">输入应用名称/备注</string>
+    <string name="app_package_label">应用包名</string>
+    <string name="app_package_hint">输入应用包名</string>
+    <string name="custom_info_label">自定义信息</string>
+    <string name="custom_info_prefix">信息</string>
+    <string name="custom_info_hint">输入信息内容</string>
+    <string name="confirm_delete_title">确认删除</string>
+    <string name="confirm_delete_msg">确定要删除配置 \"%1$s\" 吗？</string>
+    <string name="config_deleted">配置已删除</string>
+    <string name="config_saved">配置已保存</string>
+    <string name="enter_app_name">请输入应用名称</string>
+    <string name="enter_package_name">请输入应用包名</string>
+    <string name="package_exists">该包名已存在</string>
+    <string name="keep_one_info">至少需要保留一条信息</string>
+    <string name="no_config_to_export">没有可导出的配置</string>
+    <string name="config_exported">配置已导出</string>
+    <string name="export_failed">导出失败: %1$s</string>
+    <string name="import_failed">导入失败: %1$s</string>
+    <string name="import_config_title">导入配置</string>
+    <string name="import_option_merge">合并配置（保留现有配置）</string>
+    <string name="import_option_replace">替换配置（清除现有配置）</string>
+    <string name="import_result">导入完成：新增 %1$d 条，更新 %2$d 条</string>
+    <string name="import_replaced">已替换为导入的 %1$d 条配置</string>
+    <string name="cannot_open_file_picker">无法打开文件选择界面: %1$s</string>
+    <string name="cannot_open_file_saver">无法打开文件保存界面: %1$s</string>
+    
+    <!-- 提醒文案配置 -->
+    <string name="reminder_config">提醒文案配置</string>
+    <string name="reminder_config_title">提醒文案配置</string>
+    <string name="reminder_config_hint">长按删除选项</string>
+    <string name="reminder_config_empty_hint">暂无提醒文案\n点击右下角+添加文案</string>
+    <string name="btn_add_reminder">添加文案</string>
+    <string name="btn_edit_reminder">编辑文案</string>
+    <string name="reminder_message_label">提醒文案</string>
+    <string name="reminder_message_hint">输入提醒文案内容</string>
+    <string name="reminder_message_empty">请输入提醒文案</string>
+    <string name="reminder_default_message">该鹿管打卡了！</string>
+    <string name="confirm_delete_reminder_msg">确定要删除这条文案吗？\n%1$s</string>
+    <string name="reminder_config_deleted">文案已删除</string>
+    <string name="reminder_config_saved">文案已保存</string>
+    <string name="reminder_config_exported">文案配置已导出</string>
+    
+    <!-- 关于作者 -->
+    <string name="author_title">关于作者</string>
+    <string name="author_info">作者：HengryCray(Also Kakamiee and MekoNacho)。</string>
+    <string name="author_desc">这个软件终归是作用有限的，它能做到的只有监督你自律，而不是控制你自律</string>
+    <string name="author_visit_bilibili">去我的B站主页看看？顺便点个关注吧</string>
+    <string name="author_skip">算了算了白嫖软件挺好的</string>
+    <string name="author_statement_1">做这个软件呢，有以下几个原因\n一是为了帮助我的好兄弟养成健康的习惯\n二是感觉这个项目挺有意思的\n\n你不觉得这种软件好像真的有点用吗？</string>
+    <string name="author_statement_2">我去你的吧司马矛石玉伟书记\n放寒假13天我说白了比他妈的游戏新年活动都短\n戾气太重了真是对不起\n把这个关了再开一次看看别的？</string>
+    <string name="author_statement_3">猪鼻李乃王也是出生\n没必要写的征文硬要我们写\nWhat can I say?</string>
 </resources>

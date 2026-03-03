@@ -18,7 +18,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="总量统计"
+                android:text="@string/total_stats_title"
                 android:textSize="28sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
@@ -27,7 +27,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="本周统计"
+                android:text="@string/week_stats_title"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
@@ -37,7 +37,7 @@
                 android:id="@+id/tvWeekVolume"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="本周总量：0mL"
+                android:text="@string/week_total"
                 android:textSize="32sp"
                 android:textStyle="bold"
                 android:textColor="#4CAF50"
@@ -47,7 +47,7 @@
                 android:id="@+id/tvWeekCountInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="共 0 次"
+                android:text="@string/total_times"
                 android:textSize="18sp"
                 android:textColor="@color/text_secondary"
                 android:layout_marginBottom="32dp" />
@@ -55,7 +55,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="今日统计"
+                android:text="@string/today_stats_title"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
@@ -65,7 +65,7 @@
                 android:id="@+id/tvTodayVolume"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="今日总量：0mL"
+                android:text="@string/today_total"
                 android:textSize="32sp"
                 android:textStyle="bold"
                 android:textColor="#2196F3"
@@ -75,7 +75,7 @@
                 android:id="@+id/tvCountInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="共 0 次"
+                android:text="@string/total_times"
                 android:textSize="18sp"
                 android:textColor="@color/text_secondary"
                 android:layout_marginBottom="16dp" />
@@ -83,7 +83,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="每次 4mL（正常男性平均的量在2ml到6ml，这里取4ml）"
+                android:text="@string/volume_note"
                 android:textColor="@color/text_tertiary"
                 android:textSize="16sp" />
 

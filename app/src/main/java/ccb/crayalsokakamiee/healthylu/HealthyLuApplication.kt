@@ -1,11 +1,17 @@
 package ccb.crayalsokakamiee.healthylu
 
 import android.app.Application
+import android.content.Context
 
 /**
  * HealthyLu应用程序入口
  */
 class HealthyLuApplication : Application() {
+
+    override fun attachBaseContext(base: Context) {
+        val context = LanguageManager.wrapContext(base)
+        super.attachBaseContext(context)
+    }
 
     override fun onCreate() {
         super.onCreate()

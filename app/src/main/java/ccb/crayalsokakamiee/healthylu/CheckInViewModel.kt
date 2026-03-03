@@ -125,23 +125,24 @@ class CheckInViewModel(
      * 根据本周鹿管次数更新提醒语和图片
      */
     private fun updateReminderAndPhase(weekCount: Int) {
+        val context = getApplication<Application>()
         val reminderText = when (weekCount) {
-            0 -> "这周还没鹿管呢，快去🦌一发吧！"
-            1 -> "本周第一次🦌，开启性福生活！"
-            2 -> "第二次🦌了，尽量做到一周最多两次哦"
-            in 3..6 -> "不要再🦌了，舒服过后也是要休息一下的！"
-            7 -> "小鹿燃尽了..."
-            42 -> "宇宙的终极奥秘？"
-            in 8..149 -> "不要再🦌了，为了你的身体，这周不要再🦌了！"
-            150 -> "！？内格夫？！"
-            233 -> "233?!"
-            300 -> "应该够吧"
-            520 -> "看的出来是真爱"
-            924 -> "出生校领导自己不清楚自己被多少人骂？"
-            1919 -> "我是日本人(doge)"
-            114514 -> "每周会做奖励自己的事情吗？"
-            260224 -> "这个软件出生的日子"
-            else -> "你在玩我吗"
+            0 -> context.getString(R.string.reminder_0)
+            1 -> context.getString(R.string.reminder_1)
+            2 -> context.getString(R.string.reminder_2)
+            in 3..6 -> context.getString(R.string.reminder_3_6)
+            7 -> context.getString(R.string.reminder_7)
+            42 -> context.getString(R.string.reminder_42)
+            in 8..149 -> context.getString(R.string.reminder_8_149)
+            150 -> context.getString(R.string.reminder_150)
+            233 -> context.getString(R.string.reminder_233)
+            300 -> context.getString(R.string.reminder_300)
+            520 -> context.getString(R.string.reminder_520)
+            924 -> context.getString(R.string.reminder_924)
+            1919 -> context.getString(R.string.reminder_1919)
+            114514 -> context.getString(R.string.reminder_114514)
+            260224 -> context.getString(R.string.reminder_260224)
+            else -> context.getString(R.string.reminder_default)
         }
 
         val phaseRes = when (weekCount) {
@@ -165,6 +166,6 @@ class CheckInViewModel(
      * 获取鹿管好处对话框的描述文本
      */
     fun getWaterBenefitsMessage(): String {
-        return "医学专家普遍认为，每周手淫两次或以上属于频繁手淫。过度手淫可能导致：\n生理问题：生殖系统长期充血，诱发前列腺炎、精囊炎、尿道炎等感染，增加早泄、阳痿风险。\n身心症状：精神萎靡、注意力不集中、腰膝酸软、免疫力下降。\n\n所以说疲了累了🦌一发的说法是不对的！"
+        return getApplication<Application>().getString(R.string.water_harm_content)
     }
 }

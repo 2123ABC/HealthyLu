@@ -21,4 +21,11 @@
         <item name="android:windowExitAnimation">@anim/dialog_exit</item>
     </style>
 
+    <!-- NumberPicker主题样式 -->
+    <style name="NumberPickerTheme">
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:colorControlNormal">@color/button_teal</item>
+    </style>
+
 </resources>

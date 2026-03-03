@@ -37,6 +37,20 @@
             </intent-filter>
         </activity>
         
+        <activity
+            android:name=".ThirdPartyAppConfigActivity"
+            android:exported="false"
+            android:label="第三方应用信息配置管理"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.HealthyLu" />
+        
+        <activity
+            android:name=".ReminderConfigActivity"
+            android:exported="false"
+            android:label="定时提醒配置管理"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.HealthyLu" />
+        
         <receiver android:name=".WaterReminderReceiver" />
         
         <receiver 
