@@ -210,6 +210,9 @@ class WaterReminderService : Service() {
         // 确保后台保活通知始终显示
         updateForegroundNotification()
         
+        // 每次检测前刷新配置，确保能检测到新添加的应用
+        loadConfigs()
+        
         // 检查是否启用应用提醒
         if (!AppSettingsManager.isAppReminderEnabled(this)) {
             android.util.Log.d("WaterReminderService", "App reminder is disabled, skipping check")

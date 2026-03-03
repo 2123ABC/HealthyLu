@@ -13,10 +13,7 @@
     <string name="btn_done">Mission Complete</string>
     <string name="btn_undo">Undo</string>
     <string name="water_harm_title">Harm of Excessive Use</string>
-    <string name="water_harm_content">Medical experts generally believe that masturbating twice or more per week is considered frequent. \nExcessive masturbation may lead to:\n
-Physiological issues: Long-term congestion of the reproductive system, inducing prostatitis, seminal vesiculitis, urethritis and other infections, increasing the risk of premature ejaculation and impotence.\n
-Physical and mental symptoms: listlessness, lack of concentration, weak waist and knees, decreased immunity.\n\n
-So the saying "do it when tired" is wrong!</string>
+    <string name="water_harm_content">Medical experts generally believe that masturbating twice or more per week is considered frequent.\nExcessive masturbation may lead to:\nPhysiological issues: Long-term congestion of the reproductive system, inducing prostatitis, seminal vesiculitis, urethritis and other infections, increasing the risk of premature ejaculation and impotence.\nPhysical and mental symptoms: listlessness, lack of concentration, weak waist and knees, decreased immunity.\n\nSo the saying "do it when tired" is wrong!</string>
     <string name="got_it">Got it</string>
     
     <!-- Reminder Messages -->

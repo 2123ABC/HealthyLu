@@ -12,8 +12,8 @@ android {
         applicationId = "ccb.crayalsokakamiee.healthylu"
         minSdk = 26
         targetSdk = 36
-        versionCode = 7
-        versionName = "1.3"
+        versionCode = 8
+        versionName = "1.31"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
